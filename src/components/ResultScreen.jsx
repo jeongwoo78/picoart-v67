@@ -533,7 +533,7 @@ const ResultScreen = ({
     
     const category = selectedStyle?.category;
     const styleName = selectedStyle?.name;
-    const styleValue = selectedStyle?.style;
+    const styleValue = selectedStyle?.style || selectedStyle?.id;  // style 또는 id 사용
     
     if (category === 'masters') {
       // 거장: mastersEducation에서 찾기
