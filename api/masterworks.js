@@ -299,7 +299,7 @@ export const leonardoMasterworks = {
   'leonardo-monalisa': {
     name: '모나리자',
     nameEn: 'Mona Lisa',
-    prompt: 'Leonardo da Vinci "Mona Lisa" (c.1503-1519), extreme sfumato edges dissolving like smoke, dark atmospheric landscape, warm golden-brown. CRITICAL: Paint ONLY the person in the original photo, apply sfumato style to THIS subject.',
+    prompt: 'Leonardo da Vinci "Mona Lisa" (c.1503-1519), extreme sfumato edges dissolving like smoke, warm golden-brown tones. CRITICAL: Paint ONLY the subject from original photo, PRESERVE original face and facial features exactly.',
     feature: '스푸마토'
   },
   'leonardo-lastsupper': {

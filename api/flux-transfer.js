@@ -635,31 +635,36 @@ const ARTIST_WEIGHTS = {
   // 르네상스
   renaissance: {
     portrait: [
-      { name: 'LEONARDO DA VINCI', weight: 40 },
-      { name: 'TITIAN', weight: 30 },
-      { name: 'RAPHAEL', weight: 20 },
-      { name: 'BOTTICELLI', weight: 10 }
+      { name: 'BOTTICELLI', weight: 30 },
+      { name: 'LEONARDO DA VINCI', weight: 25 },
+      { name: 'TITIAN', weight: 25 },
+      { name: 'RAPHAEL', weight: 20 }
     ],
     femaleFace: [
-      { name: 'LEONARDO DA VINCI', weight: 80 },
-      { name: 'BOTTICELLI', weight: 15 },
-      { name: 'RAPHAEL', weight: 5 }
-    ],
-    maleFace: [
-      { name: 'TITIAN', weight: 70 },
-      { name: 'RAPHAEL', weight: 20 },
-      { name: 'LEONARDO DA VINCI', weight: 10 }
-    ],
-    landscape: [
-      { name: 'TITIAN', weight: 50 },
+      { name: 'BOTTICELLI', weight: 50 },
       { name: 'LEONARDO DA VINCI', weight: 30 },
       { name: 'RAPHAEL', weight: 20 }
     ],
-    default: [
-      { name: 'LEONARDO DA VINCI', weight: 35 },
+    maleFace: [
+      { name: 'BOTTICELLI', weight: 23 },
+      { name: 'TITIAN', weight: 23 },
+      { name: 'RAPHAEL', weight: 22 },
+      { name: 'LEONARDO DA VINCI', weight: 22 },
+      { name: 'MICHELANGELO', weight: 10 }
+    ],
+    landscape: [
       { name: 'TITIAN', weight: 30 },
+      { name: 'LEONARDO DA VINCI', weight: 20 },
+      { name: 'BOTTICELLI', weight: 20 },
+      { name: 'RAPHAEL', weight: 15 },
+      { name: 'MICHELANGELO', weight: 15 }
+    ],
+    default: [
+      { name: 'BOTTICELLI', weight: 20 },
+      { name: 'LEONARDO DA VINCI', weight: 20 },
+      { name: 'TITIAN', weight: 20 },
       { name: 'RAPHAEL', weight: 20 },
-      { name: 'BOTTICELLI', weight: 15 }
+      { name: 'MICHELANGELO', weight: 20 }
     ]
   },
   
@@ -1679,7 +1684,7 @@ function getModernismHints(photoAnalysis) {
 const fallbackPrompts = {
   ancient: {
     name: '그리스·로마',
-    prompt: 'Transform this image into ancient Greek-Roman art. STRICT RULES: 1) ANY SPORTS/ATHLETIC ACTION (soccer, football, running, jumping, throwing, catching ball, ANY physical activity) → ALWAYS Greek/Roman MARBLE SCULPTURE in style of Discobolus or ancient Olympic athletes, pure white Carrara marble with visible carved muscles and dynamic frozen movement, classical athletic proportions, museum display style. CRITICAL: Ball games = SCULPTURE, NOT mosaic. 2) INDOOR PORTRAITS (no sports) → Greek/Roman marble sculpture with classical poses. 3) OUTDOOR SCENES WITHOUT SPORTS → Roman mosaic with LARGE CHUNKY TESSERAE TILES 50mm, THICK BLACK GROUT LINES clearly visible between EVERY tile, LIMITED COLORS (terracotta, ochre, umber, ivory, slate blue), Pompeii villa floor style. PRIORITY: Sports/athletic = ALWAYS SCULPTURE regardless of indoor/outdoor. Ancient masterpiece quality'
+    prompt: 'Transform this image into ancient Greek-Roman art. STRICT RULES: 1) ANY SPORTS/ATHLETIC ACTION (soccer, football, running, jumping, throwing, catching ball, ANY physical activity) → ALWAYS Greek/Roman MARBLE SCULPTURE in style of Discobolus or ancient Olympic athletes, pure white Carrara marble with visible carved muscles and dynamic frozen movement, classical athletic proportions, museum display style. CRITICAL: Ball games = SCULPTURE, NOT mosaic. 2) INDOOR PORTRAITS (no sports) → Greek/Roman marble sculpture with classical poses, ENTIRE FIGURE INCLUDING ALL CLOTHING must be PURE WHITE MARBLE, NO colored clothing, convert ALL fabric to carved white marble drapery folds. 3) OUTDOOR SCENES WITHOUT SPORTS → Roman mosaic with LARGE CHUNKY TESSERAE TILES 50mm, THICK BLACK GROUT LINES clearly visible between EVERY tile, LIMITED COLORS (terracotta, ochre, umber, ivory, slate blue), Pompeii villa floor style. PRIORITY: Sports/athletic = ALWAYS SCULPTURE regardless of indoor/outdoor. CRITICAL FOR ALL SCULPTURES: Convert ALL clothing colors to pure white marble, no original clothing colors preserved, entire figure is carved from single block of white Carrara marble. Ancient masterpiece quality'
   },
   
   medieval: {
