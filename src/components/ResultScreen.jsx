@@ -547,20 +547,22 @@ const ResultScreen = ({
         };
       }
     } else if (category === 'movements') {
-      // 미술사조: movementsOverview에서 찾기
-      if (movementsOverview[styleName]) {
+      // 미술사조: movementsOverview에서 찾기 (styleValue = 영문 키)
+      const edu = movementsOverview[styleValue];
+      if (edu) {
         return {
-          title: styleName,
-          content: movementsOverview[styleName],
+          title: edu.title || styleName,
+          content: edu.desc,
           category: 'movements'
         };
       }
     } else if (category === 'oriental') {
-      // 동양화: orientalOverview에서 찾기
-      if (orientalOverview[styleName]) {
+      // 동양화: orientalOverview에서 찾기 (styleValue = 영문 키)
+      const edu = orientalOverview[styleValue];
+      if (edu) {
         return {
-          title: styleName,
-          content: orientalOverview[styleName],
+          title: edu.title || styleName,
+          content: edu.desc,
           category: 'oriental'
         };
       }
@@ -576,15 +578,31 @@ const ResultScreen = ({
   
   // ========== v67.2: 2차 교육 가져오기 (자세히 보기용) ==========
   const getSecondaryEducationForBottomSheet = () => {
-    if (!isFullTransform || !currentResult) return null;
+    console.log('🔍 getSecondaryEducationForBottomSheet called');
+    console.log('   - isFullTransform:', isFullTransform);
+    console.log('   - currentResult:', currentResult);
+    
+    if (!isFullTransform || !currentResult) {
+      console.log('❌ Early return: isFullTransform or currentResult is falsy');
+      return null;
+    }
     
     const category = currentResult?.style?.category;
     const artist = currentResult?.aiSelectedArtist || displayArtist;
     const work = currentResult?.selected_work || displayWork;
     
+    console.log('   - category:', category);
+    console.log('   - artist:', artist);
+    console.log('   - work:', work);
+    
     // educationMatcher에서 키 가져오기
     const key = getEducationKey(category, artist, work);
-    if (!key) return null;
+    console.log('   - key from getEducationKey:', key);
+    
+    if (!key) {
+      console.log('❌ No key returned from getEducationKey');
+      return null;
+    }
     
     // Full 데이터 객체
     const fullData = {
@@ -593,7 +611,10 @@ const ResultScreen = ({
       oriental: oneclickOrientalSecondaryFull
     };
     
-    return fullData[category]?.[key] || null;
+    const result = fullData[category]?.[key] || null;
+    console.log('   - result:', result ? 'FOUND' : 'NOT FOUND');
+    
+    return result;
   };
   
   // ========== v67.2: 바텀시트 열기 ==========
@@ -610,13 +631,19 @@ const ResultScreen = ({
       }
     } else if (type === 'secondary') {
       // 2차 교육 Full 버전
+      console.log('🔍 openBottomSheet secondary called');
+      console.log('   - isFullTransform:', isFullTransform);
+      console.log('   - currentResult:', currentResult);
       const secondaryFull = getSecondaryEducationForBottomSheet();
+      console.log('   - secondaryFull:', secondaryFull);
       if (secondaryFull) {
         setBottomSheetContent({
           title: secondaryFull.title || '작품 설명',
           content: secondaryFull.content
         });
         setShowBottomSheet(true);
+      } else {
+        console.log('❌ No secondaryFull data found!');
       }
     }
   };
