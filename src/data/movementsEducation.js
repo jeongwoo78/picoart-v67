@@ -3,9 +3,83 @@
 // v68 - 2026-01-17 (4줄 구성, Full 버전 삭제)
 // 로딩: 사조 설명 (시대/특징)
 // 결과: 화가 설명 (누구/화풍)
+// ----------------------------------------
+// [다국어 변환 시 수정 필요]
+// - movementsBasicInfo: 사조명, 화가 성(로딩), 화가 풀네임(결과)
+// - artistFullNames: 화가 풀네임 매핑 (37명)
+// - movementsOverview: 사조 설명 4줄
+// - movementsEducation: 화가별 설명 4줄
 // ========================================
 
+// ========== 화가 풀네임 매핑 (37명) ==========
+// [다국어 변환 시 수정 필요]
+export const artistFullNames = {
+  // 그리스·로마 (스타일)
+  'ancient-greek-sculpture': '고대 그리스 조각',
+  'roman-mosaic': '로마 모자이크',
+  
+  // 중세 (스타일)
+  'byzantine': '비잔틴 미술',
+  'gothic': '고딕 미술',
+  'islamic-miniature': '이슬람 세밀화',
+  
+  // 르네상스
+  'leonardo': '레오나르도 다 빈치',
+  'michelangelo': '미켈란젤로 부오나로티',
+  'botticelli': '산드로 보티첼리',
+  'raphael': '라파엘로 산치오',
+  'titian': '티치아노 베첼리오',
+  
+  // 바로크
+  'caravaggio': '미켈란젤로 메리시 다 카라바조',
+  'rembrandt': '렘브란트 판 레인',
+  'velazquez': '디에고 벨라스케스',
+  'rubens': '페테르 파울 루벤스',
+  
+  // 로코코
+  'watteau': '장 앙투안 와토',
+  'boucher': '프랑수아 부셰',
+  
+  // 신고전·낭만·사실
+  'david': '자크 루이 다비드',
+  'ingres': '장 오귀스트 도미니크 앵그르',
+  'turner': '조지프 말로드 윌리엄 터너',
+  'delacroix': '외젠 들라크루아',
+  'courbet': '귀스타브 쿠르베',
+  'manet': '에두아르 마네',
+  
+  // 인상주의
+  'monet': '클로드 모네',
+  'renoir': '피에르 오귀스트 르누아르',
+  'degas': '에드가 드가',
+  'caillebotte': '귀스타브 카유보트',
+  
+  // 후기인상주의
+  'vangogh': '빈센트 반 고흐',
+  'gauguin': '폴 고갱',
+  'cezanne': '폴 세잔',
+  
+  // 야수파
+  'matisse': '앙리 마티스',
+  'derain': '앙드레 드랭',
+  'vlaminck': '모리스 드 블라맹크',
+  
+  // 표현주의
+  'munch': '에드바르 뭉크',
+  'kirchner': '에른스트 루트비히 키르히너',
+  'kokoschka': '오스카 코코슈카',
+  
+  // 모더니즘
+  'picasso': '파블로 피카소',
+  'magritte': '르네 마그리트',
+  'miro': '호안 미로',
+  'miró': '호안 미로',
+  'chagall': '마르크 샤갈',
+  'lichtenstein': '로이 리히텐슈타인'
+};
+
 // ========== 기본정보 ==========
+// [다국어 변환 시 수정 필요] - loading.subtitle(성), result용 풀네임은 artistFullNames 참조
 export const movementsBasicInfo = {
   'ancient': {
     loading: {

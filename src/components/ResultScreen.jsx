@@ -1,8 +1,16 @@
-// PicoArt v67 - ResultScreen
+// PicoArt v68 - ResultScreen
 // 원클릭 교육자료 매칭: educationMatcher.js로 분리 (v51 새로 작성)
 // 2025-12-18 업데이트: 교육자료 매칭 로직 전면 재작성
 // v67: 결과 화면 개선 - 0번 원본 추가, 단독변환 점 제거, 바텀시트
-// v68: 거장(AI) 대화 기능 추가
+// v68: 거장(AI) 대화 기능 추가, 로딩/결과 화가 표시 분리
+// ----------------------------------------
+// [다국어 변환 시 수정 필요]
+// - getMovementDisplayInfo(): 사조명, 시기, 화가 풀네임/생몰연도 (line ~1137)
+// - getMasterInfo(): 화가 풀네임/영문/생몰연도, 사조명 (line ~1066)
+// - getOrientalDisplayInfo(): 국가명, 스타일명 (line ~1310)
+// - artistFullNameMap: 영문→한글 풀네임 매핑 (line ~1798)
+// - UI 텍스트: 버튼, 안내문구 등
+// ----------------------------------------
 
 import React, { useState, useEffect, useRef } from 'react';
 // import BeforeAfter from './BeforeAfter';  // v67.3: 단독변환도 스와이프 방식으로 변경

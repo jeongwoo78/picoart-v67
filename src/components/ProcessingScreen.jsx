@@ -1,13 +1,25 @@
-// PicoArt v67 - ProcessingScreen (단일변환 반복 = 원클릭)
+// PicoArt v68 - ProcessingScreen (단일변환 반복 = 원클릭)
 // 원칙: 단일 변환 로직만 있고, 원클릭은 그걸 N번 반복
 // v67: 로딩 화면 개선 - 원본 고정 + TMI + 자세히 보기 바텀시트
+// v68: 로딩 시 화가 성만 표시 (모바일 최적화)
+// ----------------------------------------
+// [다국어 변환 시 수정 필요]
+// - getMovementDisplayInfo(): 사조명, 시기, 화가 풀네임/생몰연도
+// - getMasterInfo(): 화가 풀네임/영문/생몰연도, 사조명
+// - getOrientalDisplayInfo(): 국가명, 스타일명
+// - statusText 등 UI 텍스트
+// ----------------------------------------
 import React, { useEffect, useState } from 'react';
 import { processStyleTransfer } from '../utils/styleTransferAPI';
 import { educationContent } from '../data/educationContent';
-// 원클릭 교육자료 (분리된 파일) - UI + Full 버전
-import { oneclickMovementsPrimaryUI as oneclickMovementsPrimary, oneclickMovementsPrimaryFull, oneclickMovementsSecondaryUI as oneclickMovementsSecondary } from '../data/oneclickMovementsEducation';
-import { oneclickMastersPrimaryUI as oneclickMastersPrimary, oneclickMastersPrimaryFull, oneclickMastersSecondaryUI as oneclickMastersSecondary } from '../data/oneclickMastersEducation';
-import { oneclickOrientalPrimaryUI as oneclickOrientalPrimary, oneclickOrientalPrimaryFull, oneclickOrientalSecondaryUI as oneclickOrientalSecondary } from '../data/oneclickOrientalEducation';
+// 원클릭 교육자료 (분리된 파일)
+import { oneclickMovementsPrimary, oneclickMovementsSecondary } from '../data/oneclickMovementsEducation';
+import { oneclickMastersPrimary, oneclickMastersSecondary } from '../data/oneclickMastersEducation';
+import { oneclickOrientalPrimary, oneclickOrientalSecondary } from '../data/oneclickOrientalEducation';
+// v68: 기본정보 (로딩용 성 표시)
+import { movementsBasicInfo } from '../data/movementsEducation';
+import { mastersBasicInfo } from '../data/mastersEducation';
+import { orientalBasicInfo } from '../data/orientalEducation';
 // v51: 새로운 교육자료 매칭 유틸리티 (ResultScreen과 동일)
 import { getEducationKey, getEducationContent } from '../utils/educationMatcher';
 // v67: 바텀시트 컴포넌트
@@ -1037,7 +1049,54 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
           <div className="preview">
             <img src={URL.createObjectURL(photo)} alt="원본 사진" />
             <div className="preview-info">
-              <div className="preview-style">{selectedStyle?.name || '스타일 변환'}</div>
+              {/* v68: 로딩용 제목+부제 (성만 표시) */}
+              <div className="preview-style">
+                {(() => {
+                  const cat = selectedStyle?.category;
+                  const styleName = selectedStyle?.name;
+                  const styleId = selectedStyle?.id;
+                  
+                  // 사조: movementsBasicInfo 사용
+                  if (cat === 'movements' && styleId && movementsBasicInfo[styleId]) {
+                    return movementsBasicInfo[styleId].loading.name;
+                  }
+                  // 거장: mastersBasicInfo 사용
+                  if (cat === 'masters' && styleId && mastersBasicInfo[styleId]) {
+                    return mastersBasicInfo[styleId].loading.name;
+                  }
+                  // 동양화: orientalBasicInfo 사용 (국가 ID 추출)
+                  if (cat === 'oriental' && styleId) {
+                    const countryId = styleId.split('-')[0]; // 'korean-minhwa' → 'korean'
+                    if (orientalBasicInfo[countryId]) {
+                      return orientalBasicInfo[countryId].loading.name;
+                    }
+                  }
+                  return styleName || '스타일 변환';
+                })()}
+              </div>
+              <div className="preview-subtitle">
+                {(() => {
+                  const cat = selectedStyle?.category;
+                  const styleId = selectedStyle?.id;
+                  
+                  // 사조: 대표 화가 성 (카라바조 · 렘브란트 · 벨라스케스)
+                  if (cat === 'movements' && styleId && movementsBasicInfo[styleId]) {
+                    return movementsBasicInfo[styleId].loading.subtitle;
+                  }
+                  // 거장: 사조 · 국가 (후기인상주의 · 네덜란드)
+                  if (cat === 'masters' && styleId && mastersBasicInfo[styleId]) {
+                    return mastersBasicInfo[styleId].loading.subtitle;
+                  }
+                  // 동양화: 스타일 목록 (민화 · 풍속도 · 진경산수화)
+                  if (cat === 'oriental' && styleId) {
+                    const countryId = styleId.split('-')[0];
+                    if (orientalBasicInfo[countryId]) {
+                      return orientalBasicInfo[countryId].loading.subtitle;
+                    }
+                  }
+                  return '';
+                })()}
+              </div>
             </div>
             {getSingleEducationContent(selectedStyle) && (
               <div className="edu-card primary">
