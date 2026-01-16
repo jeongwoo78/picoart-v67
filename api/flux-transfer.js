@@ -2002,10 +2002,10 @@ CRITICAL INSTRUCTIONS FOR PROMPT GENERATION:
    - Choose appropriate positive text (1-4 characters) that makes the viewer feel GOOD
    - MUST be positive, auspicious, beautiful meaning - consumer will see this!
    - MUST use ONLY Chinese characters (Hanja/漢字) for Korean art
-   - Single characters: "福" (행복), "壽" (장수), "喜" (기쁨), "美" (아름다움), "和" (평화), "愛" (사랑), "樂" (즐거움), "春" (봄), "花" (꽃), "夢" (꿈)
-   - Two characters: "吉祥" (길상), "平安" (평안), "幸福" (행복), "長壽" (장수), "富貴" (부귀)
-   - Phrases: "花開富貴" (꽃피어 부귀), "萬事如意" (만사여의), "百年好合" (백년해로)
-   - For landscapes: "山水" (산수), "江山" (강산), "風流" (풍류)
+   - Single characters: "福" (blessing), "壽" (longevity), "喜" (joy), "美" (beauty), "和" (harmony), "愛" (love), "樂" (happiness), "春" (spring), "花" (flower), "夢" (dream)
+   - Two characters: "吉祥" (good fortune), "平安" (peace), "幸福" (happiness), "長壽" (long life), "富貴" (wealth)
+   - Phrases: "花開富貴" (blooming prosperity), "萬事如意" (all wishes fulfilled), "百年好合" (eternal harmony)
+   - For landscapes: "山水" (mountain water), "江山" (rivers mountains), "風流" (elegance)
 
 Return ONLY valid JSON (no markdown):
 {
@@ -2069,10 +2069,10 @@ CRITICAL INSTRUCTIONS FOR PROMPT GENERATION:
    - Choose appropriate positive text (1-4 characters) that makes the viewer feel GOOD
    - MUST be positive, auspicious, beautiful meaning - consumer will see this!
    - MUST use ONLY Chinese characters (Hanzi/漢字) for Chinese art
-   - Single characters: "福" (행복), "壽" (장수), "喜" (기쁨), "美" (아름다움), "和" (평화), "愛" (사랑), "樂" (즐거움), "春" (봄), "花" (꽃), "夢" (꿈)
-   - Two characters: "吉祥" (길상), "平安" (평안), "幸福" (행복), "長壽" (장수), "富貴" (부귀)
-   - Phrases: "花開富貴" (꽃피어 부귀), "萬事如意" (만사여의), "百年好合" (백년해로)
-   - For landscapes: "山水" (산수), "江山" (강산), "風流" (풍류)
+   - Single characters: "福" (blessing), "壽" (longevity), "喜" (joy), "美" (beauty), "和" (harmony), "愛" (love), "樂" (happiness), "春" (spring), "花" (flower), "夢" (dream)
+   - Two characters: "吉祥" (good fortune), "平安" (peace), "幸福" (happiness), "長壽" (long life), "富貴" (wealth)
+   - Phrases: "花開富貴" (blooming prosperity), "萬事如意" (all wishes fulfilled), "百年好合" (eternal harmony)
+   - For landscapes: "山水" (mountain water), "江山" (rivers mountains), "風流" (elegance)
 
 Return ONLY valid JSON (no markdown):
 {
@@ -2100,9 +2100,9 @@ Select an appropriate POSITIVE calligraphy text for this image.
 CALLIGRAPHY TEXT (POSITIVE MEANING ONLY):
 - Choose appropriate positive text (1-4 characters) that makes the viewer feel GOOD
 - MUST be positive, auspicious, beautiful meaning - consumer will see this!
-- Single characters: "福" (행복), "壽" (장수), "喜" (기쁨), "美" (아름다움), "和" (평화), "愛" (사랑), "樂" (즐거움), "春" (봄), "花" (꽃), "夢" (꿈)
-- Two characters: "吉祥" (길상), "平安" (평안), "幸福" (행복), "浮世" (우키요/덧없는 세상의 아름다움)
-- Japanese style: "粋" (이키/멋), "雅" (미야비/우아), "桜" (사쿠라/벚꽃), "波" (나미/파도), "富士" (후지)
+- Single characters: "福" (blessing), "壽" (longevity), "喜" (joy), "美" (beauty), "和" (harmony), "愛" (love), "樂" (happiness), "春" (spring), "花" (flower), "夢" (dream)
+- Two characters: "吉祥" (good fortune), "平安" (peace), "幸福" (happiness), "浮世" (ukiyo/floating world)
+- Japanese style: "粋" (iki/stylish), "雅" (miyabi/elegant), "桜" (sakura/cherry blossom), "波" (nami/wave), "富士" (Fuji)
 
 Return ONLY valid JSON (no markdown):
 {

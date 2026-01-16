@@ -2535,6 +2535,19 @@ const ResultScreen = ({
           </>
         )}
 
+        {/* v68: 거장(AI) 대화 섹션 - 네비게이션 위로 이동 */}
+        {displayCategory === 'masters' && currentMasterKey && (
+          <MasterChat
+            key={currentMasterKey}
+            masterKey={currentMasterKey}
+            onRetransform={(correctionPrompt) => handleMasterRetransform(correctionPrompt, currentMasterKey)}
+            isRetransforming={isCurrentMasterWorking}
+            retransformCost={100}
+            savedChatData={masterChatData[currentMasterKey]}
+            onChatDataChange={(data) => updateMasterChatData(currentMasterKey, data)}
+          />
+        )}
+
         {/* 원클릭 네비게이션 (교육자료 하단) - v67.2: 0번 원본 추가 */}
         {isFullTransform && (
           <div className="fullTransform-nav">
@@ -2628,19 +2641,6 @@ const ResultScreen = ({
               </div>
             )}
           </div>
-        )}
-
-        {/* 거장(AI) 대화 섹션 - 거장 카테고리일 때만 표시 (v68) */}
-        {displayCategory === 'masters' && currentMasterKey && (
-          <MasterChat
-            key={currentMasterKey}
-            masterKey={currentMasterKey}
-            onRetransform={(correctionPrompt) => handleMasterRetransform(correctionPrompt, currentMasterKey)}
-            isRetransforming={isCurrentMasterWorking}
-            retransformCost={100}
-            savedChatData={masterChatData[currentMasterKey]}
-            onChatDataChange={(data) => updateMasterChatData(currentMasterKey, data)}
-          />
         )}
 
         {/* Action Buttons */}
