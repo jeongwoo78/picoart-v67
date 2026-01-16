@@ -227,8 +227,8 @@ const ARTIST_CONFIG = {
   
   // === 표현주의 ===
   'munch':               { control: 0.40, brush: '75mm' },
-  'kirchner':            { control: 0.10, brush: '75mm' },
-  'kokoschka':           { control: 0.10, brush: '75mm' },
+  'kirchner':            { control: 0.1, brush: '75mm' },
+  'kokoschka':           { control: 0.1, brush: '75mm' },
   
   // === 모더니즘/팝아트 ===
   'picasso':             { control: 0.10, brush: '75mm' },
@@ -1766,7 +1766,7 @@ const fallbackPrompts = {
     artist: 'Edvard Munch (1863-1944)',
     movement: '표현주의 (Expressionism)',
     defaultWork: 'The Scream',
-    prompt: 'painting by Edvard Munch, Munch Expressionist art style, INTENSE PSYCHOLOGICAL emotional depth, The Scream style existential anxiety atmosphere, WAVY DISTORTED flowing lines throughout background AND on figure, haunting symbolic colors, blood red orange sky, sickly yellows, deep blues, ANXIOUS ANGUISHED EXPRESSION on face, raw emotional vulnerability exposed, visible brushwork, preserve subject identity, Munch Expressionist masterpiece quality'
+    prompt: 'painting by Edvard Munch, Munch Expressionist art style, INTENSE PSYCHOLOGICAL emotional depth, The Scream style existential anxiety atmosphere, WAVY DISTORTED flowing lines throughout background AND on figure, haunting symbolic colors, blood red orange sky, sickly yellows, deep blues, TRANSFORM expression to melancholic anxious mood, raw emotional vulnerability exposed, visible brushwork, preserve subject identity, Munch Expressionist masterpiece quality'
   },
   
   matisse: {
