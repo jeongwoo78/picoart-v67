@@ -2534,9 +2534,8 @@ const ResultScreen = ({
           <div className="fullTransform-nav">
             <button 
               onClick={() => setCurrentIndex(i => Math.max(0, i - 1))}
-              disabled={currentIndex === 0 || isRetrying}
+              disabled={currentIndex === 0}
               className="nav-btn"
-              style={{ opacity: isRetrying ? 0.5 : 1 }}
             >
               ◀ 이전
             </button>
@@ -2545,9 +2544,7 @@ const ResultScreen = ({
               <button
                 key="original"
                 className={`nav-dot ${currentIndex === 0 ? 'active' : ''}`}
-                onClick={() => !isRetrying && setCurrentIndex(0)}
-                disabled={isRetrying}
-                style={{ opacity: isRetrying ? 0.5 : 1 }}
+                onClick={() => setCurrentIndex(0)}
                 title="원본"
               />
               {/* 1~N번 결과 점 */}
@@ -2555,17 +2552,14 @@ const ResultScreen = ({
                 <button
                   key={idx}
                   className={`nav-dot ${idx + 1 === currentIndex ? 'active' : ''}`}
-                  onClick={() => !isRetrying && setCurrentIndex(idx + 1)}
-                  disabled={isRetrying}
-                  style={{ opacity: isRetrying ? 0.5 : 1 }}
+                  onClick={() => setCurrentIndex(idx + 1)}
                 />
               ))}
             </div>
             <button 
               onClick={() => setCurrentIndex(i => Math.min(fullTransformResults.length, i + 1))}
-              disabled={currentIndex === fullTransformResults.length || isRetrying}
+              disabled={currentIndex === fullTransformResults.length}
               className="nav-btn"
-              style={{ opacity: isRetrying ? 0.5 : 1 }}
             >
               다음 ▶
             </button>

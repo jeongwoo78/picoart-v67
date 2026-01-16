@@ -226,9 +226,9 @@ const ARTIST_CONFIG = {
   'vlaminck':            { control: 0.45, brush: '75mm' },
   
   // === 표현주의 ===
-  'munch':               { control: 0.60, brush: '75mm' },
-  'kirchner':            { control: 0.45, brush: '75mm' },
-  'kokoschka':           { control: 0.45, brush: '75mm' },
+  'munch':               { control: 0.40, brush: '75mm' },
+  'kirchner':            { control: 0.1, brush: '75mm' },
+  'kokoschka':           { control: 0.1, brush: '75mm' },
   
   // === 모더니즘/팝아트 ===
   'picasso':             { control: 0.10, brush: '75mm' },
@@ -1684,7 +1684,7 @@ function getModernismHints(photoAnalysis) {
 const fallbackPrompts = {
   ancient: {
     name: '그리스·로마',
-    prompt: 'Transform this image into ancient Greek-Roman art. STRICT RULES: 1) ANY SPORTS/ATHLETIC ACTION (soccer, football, running, jumping, throwing, catching ball, ANY physical activity) → ALWAYS Greek/Roman MARBLE SCULPTURE in style of Discobolus or ancient Olympic athletes, pure white Carrara marble with visible carved muscles and dynamic frozen movement, classical athletic proportions, museum display style. CRITICAL: Ball games = SCULPTURE, NOT mosaic. 2) INDOOR PORTRAITS (no sports) → Greek/Roman marble sculpture with classical poses, ENTIRE FIGURE INCLUDING ALL CLOTHING must be PURE WHITE MARBLE, NO colored clothing, convert ALL fabric to carved white marble drapery folds. 3) OUTDOOR SCENES WITHOUT SPORTS → Roman mosaic with LARGE CHUNKY TESSERAE TILES 50mm, THICK BLACK GROUT LINES clearly visible between EVERY tile, LIMITED COLORS (terracotta, ochre, umber, ivory, slate blue), Pompeii villa floor style. PRIORITY: Sports/athletic = ALWAYS SCULPTURE regardless of indoor/outdoor. CRITICAL FOR ALL SCULPTURES: Convert ALL clothing colors to pure white marble, no original clothing colors preserved, entire figure is carved from single block of white Carrara marble. Ancient masterpiece quality'
+    prompt: 'Transform this image into ancient Greek-Roman art. STRICT RULES: 1) ANY SPORTS/ATHLETIC ACTION (soccer, football, running, jumping, throwing, catching ball, ANY physical activity) → ALWAYS Greek/Roman MARBLE SCULPTURE in style of Discobolus or ancient Olympic athletes, pure white Carrara marble with visible carved muscles and dynamic frozen movement, classical athletic proportions, museum display style. CRITICAL: Ball games = SCULPTURE, NOT mosaic. 2) INDOOR PORTRAITS (no sports) → Greek/Roman marble sculpture with classical poses, ENTIRE FIGURE INCLUDING ALL CLOTHING must be PURE WHITE MARBLE, NO colored clothing, convert ALL fabric to carved white marble drapery folds. 3) OUTDOOR SCENES WITHOUT SPORTS → Roman mosaic with LARGE CHUNKY TESSERAE TILES 50mm, THICK BLACK GROUT LINES clearly visible between EVERY tile, LIMITED COLORS (terracotta, ochre, umber, ivory, slate blue), Pompeii villa floor style. PRIORITY: Sports/athletic = ALWAYS SCULPTURE regardless of indoor/outdoor. CRITICAL FOR ALL SCULPTURES: Convert ALL clothing colors to pure white marble, no original clothing colors preserved, entire figure is carved from single block of white Carrara marble. MANDATORY: ALL nipples and private areas must be covered with carved marble fabric draping or strategic arm positioning. Ancient masterpiece quality'
   },
   
   medieval: {
@@ -2001,7 +2001,7 @@ CRITICAL INSTRUCTIONS FOR PROMPT GENERATION:
 3. CALLIGRAPHY TEXT (POSITIVE MEANING ONLY):
    - Choose appropriate positive text (1-4 characters) that makes the viewer feel GOOD
    - MUST be positive, auspicious, beautiful meaning - consumer will see this!
-   - USE ONLY Chinese characters (Hanja/漢字) for Korean art
+   - MUST use ONLY Chinese characters (Hanja/漢字) for Korean art
    - Single characters: "福" (행복), "壽" (장수), "喜" (기쁨), "美" (아름다움), "和" (평화), "愛" (사랑), "樂" (즐거움), "春" (봄), "花" (꽃), "夢" (꿈)
    - Two characters: "吉祥" (길상), "平安" (평안), "幸福" (행복), "長壽" (장수), "富貴" (부귀)
    - Phrases: "花開富貴" (꽃피어 부귀), "萬事如意" (만사여의), "百年好合" (백년해로)
@@ -2068,7 +2068,7 @@ CRITICAL INSTRUCTIONS FOR PROMPT GENERATION:
 3. CALLIGRAPHY TEXT (POSITIVE MEANING ONLY):
    - Choose appropriate positive text (1-4 characters) that makes the viewer feel GOOD
    - MUST be positive, auspicious, beautiful meaning - consumer will see this!
-   - USE ONLY Chinese characters (Hanzi/漢字) for Chinese art
+   - MUST use ONLY Chinese characters (Hanzi/漢字) for Chinese art
    - Single characters: "福" (행복), "壽" (장수), "喜" (기쁨), "美" (아름다움), "和" (평화), "愛" (사랑), "樂" (즐거움), "春" (봄), "花" (꽃), "夢" (꿈)
    - Two characters: "吉祥" (길상), "平安" (평안), "幸福" (행복), "長壽" (장수), "富貴" (부귀)
    - Phrases: "花開富貴" (꽃피어 부귀), "萬事如意" (만사여의), "百年好合" (백년해로)
