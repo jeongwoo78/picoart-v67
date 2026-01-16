@@ -292,7 +292,13 @@ const MasterChat = ({
                       <button
                         key={qIdx}
                         className="question-chip"
-                        onClick={() => setInputValue(q)}
+                        onClick={() => {
+                          setInputValue(q);
+                          // 바로 전송
+                          setTimeout(() => {
+                            document.querySelector('.send-btn')?.click();
+                          }, 50);
+                        }}
                         style={{ 
                           borderColor: `${theme.primary}60`,
                           color: theme.primary

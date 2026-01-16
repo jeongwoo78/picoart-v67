@@ -2480,7 +2480,12 @@ const ResultScreen = ({
                   </div>
                 </div>
 
-                {/* Card Content */}
+                {/* Card Content - 거장(masters)은 숨김 */}
+                {(() => {
+                  const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
+                  if (category === 'masters') return null;
+                  
+                  return (
                 <div className="card-content">
                   {(() => {
                     // console.log('');
@@ -2498,7 +2503,6 @@ const ResultScreen = ({
                     </div>
                   ) : (
                     <div className="technique-explanation">
-                      <h3>🖌️ 적용된 예술 기법</h3>
                       {educationText.split('\n\n').map((paragraph, index) => (
                         paragraph.trim() && (
                           <p key={index}>
@@ -2523,6 +2527,8 @@ const ResultScreen = ({
                     </div>
                   )}
                 </div>
+                  );
+                })()}
                 
               </div>
             )}
