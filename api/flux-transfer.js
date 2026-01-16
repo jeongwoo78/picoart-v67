@@ -1142,34 +1142,34 @@ ONLY Renaissance artists: LEONARDO, TITIAN, MICHELANGELO, RAPHAEL, BOTTICELLI!
 
 Available Renaissance Artists (5명):
 
-1. LEONARDO DA VINCI (레오나르도 다 빈치) - Best for female portraits
+1. BOTTICELLI (보티첼리) - female portraits & full body, graceful
+   - Specialty: Flowing elegant lines, ethereal beauty, graceful movement
+   - Best for: Female portraits, full body, dance-like poses, gentle movement
+   - Masterworks: "Primavera", "Venus and Mars" ← SELECT ONE ONLY!
+   - When to prioritize: Female portraits or full body with graceful pose
+
+2. LEONARDO DA VINCI (레오나르도 다 빈치) - female portraits with mysterious atmosphere
    - Specialty: Sfumato technique, mysterious smile, soft transitions, psychological depth
    - Best for: Female upper body portraits, mysterious/serene expressions
    - Masterworks: "Mona Lisa", "The Last Supper", "Virgin of the Rocks" ← SELECT ONE ONLY!
 
-2. TITIAN (티치아노) - Best for male portraits & landscapes
+3. TITIAN (티치아노) - male portraits & landscapes
    - Specialty: Venetian golden color, luminous flesh tones, ARISTOCRATIC MALE PORTRAITS
    - Best for: MALE upper body portraits, landscapes with sky/sunset, noble dignified men
    - Masterworks: "Bacchus and Ariadne", "Assumption of the Virgin" ← SELECT ONE ONLY!
 
-3. RAPHAEL (라파엘로) - Best for mother+baby, peaceful scenes
-   - Specialty: Harmonious balanced composition, graceful figures, serene beauty
-   - Best for: Mother with child, peaceful family scenes, gentle relationships
-   - Masterworks: "School of Athens", "Sistine Madonna", "Galatea" ← SELECT ONE ONLY!
-   - When to prioritize: Clear mother+baby or peaceful multi-person scene
-
-4. MICHELANGELO (미켈란젤로) - Best for ADULT male, dynamic/heroic
+4. MICHELANGELO (미켈란젤로) - ADULT male, dynamic/heroic, group scenes
    - Specialty: Sculptural powerful anatomy, heroic masculine figures
    - Best for: ADULT male (age 18+) with full body, athletic, dynamic, heroic poses
    - Masterworks: "Creation of Adam", "Last Judgment" ← SELECT ONE ONLY!
    - When to prioritize: Adult male with masculine energy, sports, action, heroic subject
    - CRITICAL: NEVER for children, teenagers, women, or elderly - ONLY adult men
 
-5. BOTTICELLI (보티첼리) - Best for young female portraits & full body
-   - Specialty: Flowing elegant lines, ethereal beauty, graceful movement
-   - Best for: Young female portraits, full body, dance-like poses, gentle movement
-   - Masterworks: "Primavera", "Venus and Mars" ← SELECT ONE ONLY!
-   - When to prioritize: Young female portraits or full body with graceful pose
+5. RAPHAEL (라파엘로) - peaceful scenes, group scenes
+   - Specialty: Harmonious balanced composition, graceful figures, serene beauty
+   - Best for: Peaceful family scenes, gentle relationships, group compositions
+   - Masterworks: "School of Athens", "Sistine Madonna", "Galatea" ← SELECT ONE ONLY!
+   - When to prioritize: Peaceful multi-person scene or group composition
 
 ⚠️ CRITICAL: You MUST select a masterwork from the exact list above! Do NOT invent new titles!
 `;
