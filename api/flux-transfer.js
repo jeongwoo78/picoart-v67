@@ -226,7 +226,7 @@ const ARTIST_CONFIG = {
   'vlaminck':            { control: 0.45, brush: '75mm' },
   
   // === 표현주의 ===
-  'munch':               { control: 0.40, brush: '75mm' },
+  'munch':               { control: 0.1, brush: '75mm' },
   'kirchner':            { control: 0.1, brush: '75mm' },
   'kokoschka':           { control: 0.1, brush: '75mm' },
   
