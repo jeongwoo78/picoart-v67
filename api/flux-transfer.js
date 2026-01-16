@@ -641,8 +641,9 @@ const ARTIST_WEIGHTS = {
       { name: 'RAPHAEL', weight: 20 }
     ],
     femaleFace: [
-      { name: 'BOTTICELLI', weight: 60 },
-      { name: 'LEONARDO DA VINCI', weight: 40 }
+      { name: 'BOTTICELLI', weight: 50 },
+      { name: 'LEONARDO DA VINCI', weight: 30 },
+      { name: 'RAPHAEL', weight: 20 }
     ],
     maleFace: [
       { name: 'BOTTICELLI', weight: 23 },
