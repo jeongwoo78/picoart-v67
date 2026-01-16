@@ -103,7 +103,8 @@ const ResultScreen = ({
   const [bottomSheetContent, setBottomSheetContent] = useState(null);
   
   // ========== v67.3: 단독변환용 인덱스 상태 ==========
-  const [singleIndex, setSingleIndex] = useState(0);
+  // v68: 초기값 1 (결과)로 변경 - 결과 화면 진입 시 결과부터 보여주기
+  const [singleIndex, setSingleIndex] = useState(1);
   
   // ========== v67.2: 0번 원본 판단 (원클릭 + 단독변환 통합) ==========
   // 원클릭: currentIndex === 0일 때 원본
