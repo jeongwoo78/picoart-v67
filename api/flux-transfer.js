@@ -1145,7 +1145,7 @@ Available Renaissance Artists (5명):
 1. LEONARDO DA VINCI (레오나르도 다 빈치) - Best for female portraits
    - Specialty: Sfumato technique, mysterious smile, soft transitions, psychological depth
    - Best for: Female upper body portraits, mysterious/serene expressions
-   - Masterworks: "Mona Lisa", "The Last Supper", "Virgin of the Rocks" ← SELECT ONE ONLY!
+   - Masterworks: "Lady with an Ermine", "The Last Supper", "Virgin of the Rocks" ← SELECT ONE ONLY!
 
 2. TITIAN (티치아노) - Best for male portraits & landscapes
    - Specialty: Venetian golden color, luminous flesh tones, ARISTOCRATIC MALE PORTRAITS
@@ -1165,11 +1165,11 @@ Available Renaissance Artists (5명):
    - When to prioritize: Adult male with masculine energy, sports, action, heroic subject
    - CRITICAL: NEVER for children, teenagers, women, or elderly - ONLY adult men
 
-5. BOTTICELLI (보티첼리) - Best for young female full body, graceful
+5. BOTTICELLI (보티첼리) - Best for young female portraits & full body
    - Specialty: Flowing elegant lines, ethereal beauty, graceful movement
-   - Best for: Young female full body, dance-like poses, gentle movement
+   - Best for: Young female portraits, full body, dance-like poses, gentle movement
    - Masterworks: "Primavera", "Venus and Mars" ← SELECT ONE ONLY!
-   - When to prioritize: Young female full body with graceful pose
+   - When to prioritize: Young female portraits or full body with graceful pose
 
 ⚠️ CRITICAL: You MUST select a masterwork from the exact list above! Do NOT invent new titles!
 `;
@@ -1694,7 +1694,7 @@ const fallbackPrompts = {
   
   renaissance: {
     name: 'Leonardo da Vinci',
-    prompt: 'Renaissance painting by Leonardo da Vinci, Leonardo art style, EXTREME sfumato technique, PRESERVE original person face and features exactly, apply Mona Lisa PAINTING TECHNIQUE ONLY sfumato haze, do NOT transform face into Mona Lisa apply Leonardo STYLE not LIKENESS, apply very strong soft atmospheric haze throughout, all edges must be completely blurred, no sharp outlines anywhere in entire painting, mysterious smoky depth with sfumato technique, every boundary softly dissolved into atmosphere, warm golden Renaissance colors, harmonious balanced composition, unified composition all figures together NOT separated, preserve facial identity, Renaissance masterpiece quality'
+    prompt: 'Renaissance painting by Leonardo da Vinci, Leonardo art style, EXTREME sfumato technique, PRESERVE original person face and features exactly, apply Leonardo PAINTING TECHNIQUE ONLY with sfumato haze, apply Leonardo STYLE not any specific portrait LIKENESS, apply very strong soft atmospheric haze throughout, all edges must be completely blurred, no sharp outlines anywhere in entire painting, mysterious smoky depth with sfumato technique, every boundary softly dissolved into atmosphere, warm golden Renaissance colors, harmonious balanced composition, unified composition all figures together NOT separated, preserve facial identity, Renaissance masterpiece quality'
   },
   
   baroque: {
