@@ -2535,8 +2535,8 @@ const ResultScreen = ({
           </>
         )}
 
-        {/* v68: 거장(AI) 대화 섹션 - 네비게이션 위로 이동 */}
-        {displayCategory === 'masters' && currentMasterKey && (
+        {/* v68: 거장(AI) 대화 섹션 - 네비게이션 위로 이동, 원본에서는 숨김 */}
+        {displayCategory === 'masters' && currentMasterKey && !isOriginalView && (
           <MasterChat
             key={currentMasterKey}
             masterKey={currentMasterKey}
