@@ -1390,7 +1390,11 @@ const ResultScreen = ({
         'lichtenstein': { name: '리히텐슈타인', years: '1923~1997', movement: '팝아트' },
         'roy lichtenstein': { name: '리히텐슈타인', years: '1923~1997', movement: '팝아트' },
         '리히텐슈타인': { name: '리히텐슈타인', years: '1923~1997', movement: '팝아트' },
-        '로이 리히텐슈타인': { name: '리히텐슈타인', years: '1923~1997', movement: '팝아트' }
+        '로이 리히텐슈타인': { name: '리히텐슈타인', years: '1923~1997', movement: '팝아트' },
+        'chagall': { name: '샤갈', years: '1887~1985', movement: '초현실주의' },
+        'marc chagall': { name: '샤갈', years: '1887~1985', movement: '초현실주의' },
+        '샤갈': { name: '샤갈', years: '1887~1985', movement: '초현실주의' },
+        '마르크 샤갈': { name: '샤갈', years: '1887~1985', movement: '초현실주의' }
       };
       
       const info = mastersInfo[normalized] || mastersInfo[artistName];
