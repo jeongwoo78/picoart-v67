@@ -2307,21 +2307,6 @@ const ResultScreen = ({
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        
-        {/* Header */}
-        <div className="result-header">
-          <h1>{isOriginalView ? '📷 원본' : '✨ 완성!'}</h1>
-          <p className="result-subtitle">
-            {isFullTransform 
-              ? isOriginalView 
-                ? `${selectedStyle.name} (0/${fullTransformResults.length})`
-                : `${selectedStyle.name} (${currentIndex}/${fullTransformResults.length})`
-              : isOriginalView
-                ? `${selectedStyle.name} (0/1)`
-                : `${selectedStyle.name} (1/1)`
-            }
-          </p>
-        </div>
 
         {/* 원클릭: 0번은 원본, 1~N번은 결과 (재변환 결과 반영) */}
         {isFullTransform && (
