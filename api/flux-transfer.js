@@ -1145,7 +1145,7 @@ Available Renaissance Artists (5명):
 1. LEONARDO DA VINCI (레오나르도 다 빈치) - Best for female portraits
    - Specialty: Sfumato technique, mysterious smile, soft transitions, psychological depth
    - Best for: Female upper body portraits, mysterious/serene expressions
-   - Masterworks: "Lady with an Ermine", "The Last Supper", "Virgin of the Rocks" ← SELECT ONE ONLY!
+   - Masterworks: "Mona Lisa", "The Last Supper", "Virgin of the Rocks" ← SELECT ONE ONLY!
 
 2. TITIAN (티치아노) - Best for male portraits & landscapes
    - Specialty: Venetian golden color, luminous flesh tones, ARISTOCRATIC MALE PORTRAITS
