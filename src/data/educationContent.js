@@ -35,7 +35,13 @@ export const educationContent = {
   // 동양화
   orientalPrimary,
   orientalSecondary,
-  orientalStory
+  orientalStory,
+  
+  // v67 추가: 단일변환 로딩화면용 (ProcessingScreen에서 사용)
+  // style.id로 직접 접근: educationContent.movements['renaissance']
+  movements: movementsOverview,
+  masters: mastersEducation,
+  oriental: orientalOverview
 };
 
 // 개별 export
