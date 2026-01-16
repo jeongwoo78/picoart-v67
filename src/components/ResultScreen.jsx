@@ -2356,21 +2356,37 @@ const ResultScreen = ({
           </div>
         )}
 
-        {/* 단독변환 점 네비게이션 (v67.3) */}
+        {/* 단독변환 네비게이션 (v68: 원클릭과 동일하게) */}
         {!isFullTransform && (
-          <div className="dots-container single-mode">
+          <div className="fullTransform-nav">
             <button 
-              className={`dot original ${singleIndex === 0 ? 'active' : ''}`}
               onClick={() => setSingleIndex(0)}
+              disabled={singleIndex === 0}
+              className="nav-btn"
             >
-              📷
+              ◀ 이전
             </button>
+            <div className="nav-dots">
+              {/* 0번 원본 점 */}
+              <button
+                className={`nav-dot ${singleIndex === 0 ? 'active' : ''}`}
+                onClick={() => setSingleIndex(0)}
+                title="원본"
+              />
+              {/* 1번 결과 점 */}
+              <button
+                className={`nav-dot ${singleIndex === 1 ? 'active' : ''}`}
+                onClick={() => setSingleIndex(1)}
+                disabled={!finalDisplayImage}
+              />
+            </div>
             <button 
-              className={`dot ${singleIndex === 1 ? 'active' : ''}`}
               onClick={() => setSingleIndex(1)}
-              disabled={!finalDisplayImage}
-            />
-            <span className="count">[{singleIndex}/1]</span>
+              disabled={singleIndex === 1 || !finalDisplayImage}
+              className="nav-btn"
+            >
+              다음 ▶
+            </button>
           </div>
         )}
 
