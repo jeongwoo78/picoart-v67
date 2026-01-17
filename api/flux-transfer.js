@@ -1140,18 +1140,30 @@ YOU MUST ONLY SELECT FROM THE ARTISTS LISTED BELOW!
 DO NOT select artists from other movements (Baroque, Impressionism, Expressionism, etc.)
 ONLY Renaissance artists: LEONARDO, TITIAN, MICHELANGELO, RAPHAEL, BOTTICELLI!
 
+⭐⭐⭐ FEMALE PORTRAIT SELECTION RULE ⭐⭐⭐
+STOP thinking "female portrait = Mona Lisa = Leonardo"!
+For FEMALE subjects, you MUST randomize between artists:
+- BOTTICELLI: 50% (default choice for most female portraits)
+- LEONARDO: 30% (only if mysterious/contemplative mood)
+- RAPHAEL: 20% (only if peaceful/serene scene)
+
+🎲 RANDOMIZATION REQUIRED: Do NOT always pick Leonardo for women!
+
 Available Renaissance Artists (5명):
 
-1. BOTTICELLI (보티첼리) - female portraits & full body, graceful
+1. BOTTICELLI (보티첼리) - ⭐ DEFAULT for female portraits
    - Specialty: Flowing elegant lines, ethereal beauty, graceful movement
-   - Best for: Female portraits, full body, dance-like poses, gentle movement
+   - Best for: Young women, beauty, fashion, elegance, graceful poses
    - Masterworks: "Primavera", "Venus and Mars" ← SELECT ONE ONLY!
-   - When to prioritize: Female portraits or full body with graceful pose
+   - ⭐ SELECT BOTTICELLI when: Female subject (any pose, any mood) - 50% of cases!
+   - Botticelli is NOT just for "dance poses" - he excels at ALL female portraits
 
-2. LEONARDO DA VINCI (레오나르도 다 빈치) - female portraits with mysterious atmosphere
-   - Specialty: Sfumato technique, mysterious smile, soft transitions, psychological depth
-   - Best for: Female upper body portraits, mysterious/serene expressions
-   - Masterworks: "Mona Lisa", "The Last Supper", "Virgin of the Rocks" ← SELECT ONE ONLY!
+2. LEONARDO DA VINCI (레오나르도 다 빈치) - female with mysterious atmosphere ONLY
+   - Specialty: Sfumato technique, mysterious smile, soft transitions
+   - Best for: ONLY when photo has mysterious/contemplative/enigmatic mood
+   - Masterworks: "Virgin of the Rocks", "The Last Supper" ← SELECT ONE ONLY!
+   - ⚠️ DO NOT default to Leonardo just because subject is female!
+   - Select Leonardo ONLY if: mysterious expression, contemplative mood, dark background
 
 3. TITIAN (티치아노) - male portraits & landscapes
    - Specialty: Venetian golden color, luminous flesh tones, ARISTOCRATIC MALE PORTRAITS

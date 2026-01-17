@@ -65,7 +65,7 @@ export const masterworkNameMapping = {
   // 르네상스
   'primavera': 'botticelli-primavera', '프리마베라': 'botticelli-primavera',
   'venus and mars': 'botticelli-venusmars',
-  'mona lisa': 'leonardo-monalisa', '모나리자': 'leonardo-monalisa',
+  // 모나리자 제거 (얼굴 합성 문제)
   'the last supper': 'leonardo-lastsupper', '최후의 만찬': 'leonardo-lastsupper',
   'virgin of the rocks': 'leonardo-virginrocks', '암굴의 성모': 'leonardo-virginrocks',
   'bacchus and ariadne': 'titian-bacchus', '바쿠스와 아리아드네': 'titian-bacchus',
@@ -1233,7 +1233,7 @@ export function getArtistMasterworkList(artistKey) {
     'byzantine': ['byzantine-justinian', 'byzantine-theodora', 'byzantine-deesis', 'byzantine-pantocrator'],
     'islamic-miniature': ['islamic-youth', 'islamic-miraj', 'islamic-simurgh', 'islamic-lovers', 'islamic-rustam'],
     'botticelli': ['botticelli-primavera', 'botticelli-venusmars'],
-    'leonardo': ['leonardo-monalisa', 'leonardo-lastsupper', 'leonardo-virginrocks'],
+    'leonardo': ['leonardo-lastsupper', 'leonardo-virginrocks'],
     'titian': ['titian-bacchus', 'titian-assumption'],
     'michelangelo': ['michelangelo-adam', 'michelangelo-lastjudgment'],
     'raphael': ['raphael-athens', 'raphael-sistinamadonna', 'raphael-galatea'],
