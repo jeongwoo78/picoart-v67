@@ -512,8 +512,8 @@ const ResultScreen = ({
   const getPrimaryEducation = () => {
     if (!isFullTransform) return null;
     
-    // 카테고리 확인 (첫 번째 결과의 카테고리)
-    const category = results[0]?.style?.category;
+    // 카테고리 확인 (첫 번째 결과의 카테고리 또는 selectedStyle)
+    const category = results[0]?.style?.category || selectedStyle?.category;
     if (!category) return null;
     
     // 카테고리별 1차 교육 데이터 (v68: Full/UI 통합)

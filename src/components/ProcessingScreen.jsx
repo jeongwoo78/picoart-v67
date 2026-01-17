@@ -547,12 +547,15 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
     // 화가별 풀네임, 생몰연도
     const artistInfo = {
       // 고대
-      'greek sculpture': { name: '그리스 조각', years: '' },
+      'greek sculpture': { name: '고대 그리스 조각', years: '' },
+      'classical sculpture': { name: '고대 그리스 조각', years: '' },
       'roman mosaic': { name: '로마 모자이크', years: '' },
+      'mosaic': { name: '로마 모자이크', years: '' },
       // 중세
       'byzantine': { name: '비잔틴', years: '' },
       'gothic': { name: '고딕', years: '' },
       'islamic miniature': { name: '이슬람 세밀화', years: '' },
+      'islamic': { name: '이슬람 세밀화', years: '' },
       // 르네상스
       'leonardo': { name: '레오나르도 다 빈치', years: '1452~1519' },
       'leonardo da vinci': { name: '레오나르도 다 빈치', years: '1452~1519' },
@@ -964,7 +967,9 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
               <div className="preview">
                 <img src={URL.createObjectURL(photo)} alt="원본 사진" />
                 <div className="preview-info">
-                  <div className="preview-style">{selectedStyle?.name || '전체 변환'}</div>
+                  {/* v68: 제목을 교육자료 title로 변경 */}
+                  <div className="preview-style">{getPrimaryEducation().title || selectedStyle?.name || '전체 변환'}</div>
+                  <div className="preview-subtitle">원클릭 변환 안내</div>
                 </div>
                 <div className="edu-card primary">
                   <p>{getPrimaryEducation().content}</p>
