@@ -1,15 +1,9 @@
-// PicoArt v68 - ResultScreen
+// PicoArt v69 - ResultScreen
 // 원클릭 교육자료 매칭: educationMatcher.js로 분리 (v51 새로 작성)
 // 2025-12-18 업데이트: 교육자료 매칭 로직 전면 재작성
 // v67: 결과 화면 개선 - 0번 원본 추가, 단독변환 점 제거, 바텀시트
 // v68: 거장(AI) 대화 기능 추가, 로딩/결과 화가 표시 분리
-// ----------------------------------------
-// [다국어 변환 시 수정 필요]
-// - getMovementDisplayInfo(): 사조명, 시기, 화가 풀네임/생몰연도 (line ~1137)
-// - getMasterInfo(): 화가 풀네임/영문/생몰연도, 사조명 (line ~1066)
-// - getOrientalDisplayInfo(): 국가명, 스타일명 (line ~1310)
-// - artistFullNameMap: 영문→한글 풀네임 매핑 (line ~1798)
-// - UI 텍스트: 버튼, 안내문구 등
+// v69: masterData.js 통합 - 모든 사조/거장/동양화 데이터 일원화
 // ----------------------------------------
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -31,6 +25,12 @@ import { saveToGallery } from './GalleryScreen';
 import { processStyleTransfer } from '../utils/styleTransferAPI';
 // v51: 새로운 교육자료 매칭 유틸리티
 import { getEducationKey, getEducationContent } from '../utils/educationMatcher';
+// v69: 마스터 데이터 (Single Source of Truth)
+import { 
+  MOVEMENTS, MASTERS, ORIENTAL, MOVEMENT_ARTISTS,
+  MODERNISM_SUB, NINETEENTH_CENTURY_SUB, ART_NOUVEAU,
+  CATEGORY_ICONS
+} from '../data/masterData';
 
 
 const ResultScreen = ({ 
@@ -1162,24 +1162,24 @@ const ResultScreen = ({
   // 제목: 사조(영문, 시기)
   // 부제: 화가명(생몰연도)
   const getMovementDisplayInfo = (styleName, artistName) => {
-    // 사조별 영문명, 시기
+    // v69: masterData 기준으로 통일된 사조 정보
     const movementInfo = {
-      '고대': { en: 'Ancient', period: 'BC~AD 4세기' },
-      '그리스·로마': { en: 'Greco-Roman', period: 'BC~AD 4세기' },
-      '중세': { en: 'Medieval', period: '5~15세기' },
-      '중세 미술': { en: 'Medieval', period: '5~15세기' },
+      '고대': { en: 'Greek & Roman', period: 'BC 800~AD 500' },
+      '그리스·로마': { en: 'Greek & Roman', period: 'BC 800~AD 500' },
+      '중세': { en: 'Medieval Art', period: '5~15세기' },
+      '중세 미술': { en: 'Medieval Art', period: '5~15세기' },
       '르네상스': { en: 'Renaissance', period: '14~16세기' },
       '바로크': { en: 'Baroque', period: '17~18세기' },
       '로코코': { en: 'Rococo', period: '18세기' },
       '신고전주의': { en: 'Neoclassicism', period: '18~19세기' },
       '낭만주의': { en: 'Romanticism', period: '19세기' },
       '사실주의': { en: 'Realism', period: '19세기' },
-      '신고전 vs 낭만 vs 사실주의': { en: 'Neoclassicism·Romanticism·Realism', period: '18~19세기' },
-      '인상주의': { en: 'Impressionism', period: '19세기 말' },
+      '신고전 vs 낭만 vs 사실주의': { en: 'Neoclassicism·Romanticism·Realism', period: '19세기' },
+      '인상주의': { en: 'Impressionism', period: '19세기 후반' },
       '후기인상주의': { en: 'Post-Impressionism', period: '19세기 말' },
       '야수파': { en: 'Fauvism', period: '20세기 초' },
       '표현주의': { en: 'Expressionism', period: '20세기 초' },
-      '아르누보': { en: 'Art Nouveau', period: '19세기 말' },
+      '아르누보': { en: 'Art Nouveau', period: '19세기 말~20세기 초' },
       '20세기 모더니즘': { en: 'Modernism', period: '20세기' },
       // 20세기 모더니즘 세부 사조
       '입체주의': { en: 'Cubism', period: '20세기 초' },
