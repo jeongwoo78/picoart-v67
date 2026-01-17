@@ -170,14 +170,14 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
     return null;
   };
 
-  // v67: 원클릭 1차 교육 Full 버전 (자세히 보기용)
+  // v68: 원클릭 1차 교육 (자세히 보기용) - Full/UI 통합
   const getPrimaryEducationFull = () => {
     if (category === 'movements') {
-      return { ...oneclickMovementsPrimaryFull, title: '2,500년 서양미술사 관통' };
+      return { ...oneclickMovementsPrimary, title: '2,500년 서양미술사 관통' };
     } else if (category === 'masters') {
-      return oneclickMastersPrimaryFull;
+      return oneclickMastersPrimary;
     } else if (category === 'oriental') {
-      return oneclickOrientalPrimaryFull;
+      return oneclickOrientalPrimary;
     }
     return null;
   };

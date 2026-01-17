@@ -23,10 +23,10 @@ import { mastersPrimary, mastersSecondary, mastersStory } from '../data/educatio
 import { mastersEducation } from '../data/mastersEducation';
 import { movementsOverview, movementsEducation } from '../data/movementsEducation';
 import { orientalOverview, orientalEducation } from '../data/orientalEducation';
-// 원클릭 전용 교육자료 (분리된 파일)
-import { oneclickMovementsPrimaryUI, oneclickMovementsPrimaryFull, oneclickMovementsSecondaryUI as oneclickMovementsSecondary, oneclickMovementsSecondaryFull } from '../data/oneclickMovementsEducation';
-import { oneclickMastersPrimaryUI, oneclickMastersPrimaryFull, oneclickMastersSecondaryUI as oneclickMastersSecondary, oneclickMastersSecondaryFull } from '../data/oneclickMastersEducation';
-import { oneclickOrientalPrimaryUI, oneclickOrientalPrimaryFull, oneclickOrientalSecondaryUI as oneclickOrientalSecondary, oneclickOrientalSecondaryFull } from '../data/oneclickOrientalEducation';
+// 원클릭 전용 교육자료 (분리된 파일) - v68: Full/UI 구분 제거
+import { oneclickMovementsPrimary, oneclickMovementsSecondary } from '../data/oneclickMovementsEducation';
+import { oneclickMastersPrimary, oneclickMastersSecondary } from '../data/oneclickMastersEducation';
+import { oneclickOrientalPrimary, oneclickOrientalSecondary } from '../data/oneclickOrientalEducation';
 import { saveToGallery } from './GalleryScreen';
 import { processStyleTransfer } from '../utils/styleTransferAPI';
 // v51: 새로운 교육자료 매칭 유틸리티
@@ -516,22 +516,16 @@ const ResultScreen = ({
     const category = results[0]?.style?.category;
     if (!category) return null;
     
-    // 카테고리별 1차 교육 데이터
+    // 카테고리별 1차 교육 데이터 (v68: Full/UI 통합)
     const primaryData = {
-      movements: oneclickMovementsPrimaryUI,
-      masters: oneclickMastersPrimaryUI,
-      oriental: oneclickOrientalPrimaryUI
-    };
-    
-    const fullData = {
-      movements: oneclickMovementsPrimaryFull,
-      masters: oneclickMastersPrimaryFull,
-      oriental: oneclickOrientalPrimaryFull
+      movements: oneclickMovementsPrimary,
+      masters: oneclickMastersPrimary,
+      oriental: oneclickOrientalPrimary
     };
     
     return {
       ui: primaryData[category],
-      full: fullData[category],
+      full: primaryData[category],  // v68: 동일 데이터
       category
     };
   };
@@ -613,14 +607,14 @@ const ResultScreen = ({
       return null;
     }
     
-    // Full 데이터 객체
-    const fullData = {
-      masters: oneclickMastersSecondaryFull,
-      movements: oneclickMovementsSecondaryFull,
-      oriental: oneclickOrientalSecondaryFull
+    // v68: Full/UI 통합 - Secondary 데이터
+    const secondaryData = {
+      masters: oneclickMastersSecondary,
+      movements: oneclickMovementsSecondary,
+      oriental: oneclickOrientalSecondary
     };
     
-    const result = fullData[category]?.[key] || null;
+    const result = secondaryData[category]?.[key] || null;
     console.log('   - result:', result ? 'FOUND' : 'NOT FOUND');
     
     return result;
