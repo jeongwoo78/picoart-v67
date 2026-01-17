@@ -542,7 +542,8 @@ const ResultScreen = ({
     
     if (category === 'masters') {
       // 거장: mastersEducation에서 찾기
-      const key = `${styleValue}-master`;
+      // styleValue가 이미 'chagall-master' 형태일 수 있음
+      const key = styleValue?.endsWith('-master') ? styleValue : `${styleValue}-master`;
       const edu = mastersEducation[key];
       console.log('🔍 [거장 교육]', { key, found: !!edu });
       if (edu) {
@@ -556,8 +557,10 @@ const ResultScreen = ({
       // 미술사조: movementsOverview에서 찾기 (styleValue = 영문 키)
       const edu = movementsOverview[styleValue];
       if (edu) {
+        // v68: 제목은 movementsBasicInfo에서 영문/기간 포함된 name 사용
+        const basicInfo = movementsBasicInfo[styleValue];
         return {
-          title: edu.title || styleName,
+          title: basicInfo?.loading?.name || edu.title || styleName,
           content: edu.desc,
           category: 'movements'
         };
@@ -566,8 +569,10 @@ const ResultScreen = ({
       // 동양화: orientalOverview에서 찾기 (styleValue = 영문 키)
       const edu = orientalOverview[styleValue];
       if (edu) {
+        // v68: 제목은 orientalBasicInfo에서 영문 포함된 name 사용
+        const basicInfo = orientalBasicInfo[styleValue];
         return {
-          title: edu.title || styleName,
+          title: basicInfo?.loading?.name || edu.title || styleName,
           content: edu.desc,
           category: 'oriental'
         };
@@ -2520,19 +2525,8 @@ const ResultScreen = ({
                 {/* Card Header */}
                 <div className="card-header">
                   <div className="technique-icon">
-                    {(() => {
-                      const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
-                      // v68: 동양화는 국기 아이콘
-                      if (category === 'oriental') {
-                        const artistName = displayArtist || '';
-                        const normalized = artistName.toLowerCase();
-                        if (normalized.includes('korea') || normalized.includes('민화') || normalized.includes('풍속') || normalized.includes('산수')) return '🇰🇷';
-                        if (normalized.includes('china') || normalized.includes('chinese') || normalized.includes('공필') || normalized.includes('수묵')) return '🇨🇳';
-                        if (normalized.includes('japan') || normalized.includes('ukiyo') || normalized.includes('우키요')) return '🇯🇵';
-                        return '🎨';
-                      }
-                      return isFullTransform ? (currentResult?.style?.icon || '🎨') : (selectedStyle.icon || '🎨');
-                    })()}
+                    {/* v68: 모든 카테고리 selectedStyle.icon 통일 */}
+                    {selectedStyle?.icon || '🎨'}
                   </div>
                   <div>
                     <h2>
