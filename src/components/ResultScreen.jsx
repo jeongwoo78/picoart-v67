@@ -1,14 +1,15 @@
-// PicoArt v51 - ResultScreen
+// PicoArt v68 - ResultScreen
 // 원클릭 교육자료 매칭: educationMatcher.js로 분리 (v51 새로 작성)
 // 2025-12-18 업데이트: 교육자료 매칭 로직 전면 재작성
-// v68: 거장(AI) 대화 기능 추가
+// v68: 거장(AI) 대화 기능 추가, 교육 데이터 구조 개선
 
 import React, { useState, useEffect, useRef } from 'react';
 import BeforeAfter from './BeforeAfter';
 import MasterChat from './MasterChat';
-import { orientalSecondary, orientalStory } from '../data/educationContent';
-import { movementsPrimary, movementsSecondary, movementsStory } from '../data/educationContent';
-import { mastersPrimary, mastersSecondary, mastersStory } from '../data/educationContent';
+// v68: 새로운 교육 데이터 구조 import
+import { movementsOverview, movementsEducation, movementsBasicInfo, artistFullNames } from '../data/movementsEducation';
+import { mastersBasicInfo, mastersLoadingEducation, mastersResultEducation, mastersEducation } from '../data/mastersEducation';
+import { orientalBasicInfo, orientalOverview, orientalEducation } from '../data/orientalEducation';
 // 원클릭 전용 교육자료 (분리된 파일)
 import { oneclickMovementsSecondary } from '../data/oneclickMovementsEducation';
 import { oneclickMastersSecondary } from '../data/oneclickMastersEducation';
@@ -994,12 +995,17 @@ const ResultScreen = ({
     // 화가별 풀네임, 생몰연도
     const artistInfo = {
       // 고대
-      'greek sculpture': { name: '그리스 조각', years: '' },
+      'greek sculpture': { name: '고대 그리스 조각', years: '' },
+      'classical sculpture': { name: '고대 그리스 조각', years: '' },
       'roman mosaic': { name: '로마 모자이크', years: '' },
       // 중세
       'byzantine': { name: '비잔틴', years: '' },
+      'byzantine art': { name: '비잔틴', years: '' },
       'gothic': { name: '고딕', years: '' },
+      'gothic art': { name: '고딕', years: '' },
+      'gothic stained glass': { name: '고딕 스테인드글라스', years: '' },
       'islamic miniature': { name: '이슬람 세밀화', years: '' },
+      'persian miniature': { name: '페르시아 세밀화', years: '' },
       // 르네상스
       'leonardo': { name: '레오나르도 다 빈치', years: '1452~1519' },
       'leonardo da vinci': { name: '레오나르도 다 빈치', years: '1452~1519' },
