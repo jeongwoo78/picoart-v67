@@ -538,10 +538,13 @@ const ResultScreen = ({
     const styleName = selectedStyle?.name;
     const styleValue = selectedStyle?.style || selectedStyle?.id;  // style 또는 id 사용
     
+    console.log('🔍 [getSinglePrimaryEducation]', { category, styleName, styleValue, selectedStyle });
+    
     if (category === 'masters') {
       // 거장: mastersEducation에서 찾기
       const key = `${styleValue}-master`;
       const edu = mastersEducation[key];
+      console.log('🔍 [거장 교육]', { key, found: !!edu });
       if (edu) {
         return {
           title: edu.title,
