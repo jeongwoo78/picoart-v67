@@ -17,8 +17,6 @@ import { mastersBasicInfo } from '../data/mastersEducation';
 import { orientalBasicInfo } from '../data/orientalEducation';
 // v51: 새로운 교육자료 매칭 유틸리티 (ResultScreen과 동일)
 import { getEducationKey, getEducationContent } from '../utils/educationMatcher';
-// v67: 바텀시트 컴포넌트
-import BottomSheet from './BottomSheet';
 // v69: 마스터 데이터 (Single Source of Truth)
 import { 
   MOVEMENTS, MASTERS, ORIENTAL, MOVEMENT_ARTISTS,
@@ -36,9 +34,6 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
   const [completedCount, setCompletedCount] = useState(0);
   const [viewIndex, setViewIndex] = useState(-1);
   const [touchStartX, setTouchStartX] = useState(0);
-  
-  // v67: 바텀시트 상태
-  const [showBottomSheet, setShowBottomSheet] = useState(false);
   
   // 원클릭 여부
   const isFullTransform = selectedStyle?.isFullTransform === true;
@@ -1023,16 +1018,6 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
           </div>
         )}
       </div>
-
-      {/* v67: 바텀시트 (자세히 보기) */}
-      {isFullTransform && getPrimaryEducationFull() && (
-        <BottomSheet
-          isOpen={showBottomSheet}
-          onClose={() => setShowBottomSheet(false)}
-          title={getPrimaryEducationFull().title}
-          content={getPrimaryEducationFull().content}
-        />
-      )}
 
       <style>{`
         .processing-screen {
