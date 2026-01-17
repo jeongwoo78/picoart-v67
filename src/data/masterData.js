@@ -292,17 +292,17 @@ export const ORIENTAL = {
       'minhwa': { 
         ko: '민화', 
         en: 'Minhwa',
-        aliases: ['korean minhwa', '한국 민화']
+        aliases: ['korean minhwa', 'korean-minhwa', '한국 민화', '민화']
       },
       'pungsokdo': { 
         ko: '풍속도', 
         en: 'Pungsokdo',
-        aliases: ['korean pungsokdo', '풍속화', '한국 풍속도']
+        aliases: ['korean pungsokdo', 'korean-pungsokdo', 'korean-genre', '풍속화', '한국 풍속도']
       },
       'jingyeong': { 
         ko: '진경산수화', 
         en: 'Jingyeong',
-        aliases: ['korean jingyeong', '진경산수', '한국 진경산수화']
+        aliases: ['korean jingyeong', 'korean-jingyeong', '진경산수', '한국 진경산수화']
       }
     }
   },
@@ -316,12 +316,12 @@ export const ORIENTAL = {
       'gongbi': { 
         ko: '공필화', 
         en: 'Gongbi',
-        aliases: ['chinese gongbi', '중국 공필화']
+        aliases: ['chinese gongbi', 'chinese-gongbi', '중국 공필화', '공필화']
       },
       'ink-wash': { 
         ko: '수묵화', 
         en: 'Ink Wash',
-        aliases: ['chinese ink wash', 'chinese ink', '중국 수묵화']
+        aliases: ['chinese ink wash', 'chinese-ink', 'chinese-ink-wash', '중국 수묵화', '수묵화']
       }
     }
   },
@@ -335,7 +335,7 @@ export const ORIENTAL = {
       'ukiyo-e': { 
         ko: '우키요에', 
         en: 'Ukiyo-e',
-        aliases: ['japanese ukiyo-e', 'ukiyoe', '일본 우키요에']
+        aliases: ['japanese ukiyo-e', 'japanese-ukiyoe', 'ukiyoe', '일본 우키요에', '우키요에']
       }
     }
   }
