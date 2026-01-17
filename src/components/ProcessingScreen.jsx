@@ -970,9 +970,11 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
           align-items: center;
           justify-content: center;
           min-height: 60px;
+          text-align: center;
         }
         .preview-info.title-only .preview-style {
           margin-bottom: 0;
+          text-align: center;
         }
         .preview-style { 
           font-size: 1.35rem; 

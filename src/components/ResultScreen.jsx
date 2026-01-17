@@ -2311,12 +2311,12 @@ const ResultScreen = ({
 
         /* v68: 원클릭 0번 (부제 없음) - 아이콘+제목 가운데 정렬 */
         .primary-education .card-header {
-          justify-content: center;
+          flex-direction: column;
           align-items: center;
+          text-align: center;
         }
-        .primary-education .card-header > div {
-          display: flex;
-          align-items: center;
+        .primary-education .card-header h2 {
+          text-align: center;
         }
 
         .technique-icon {
