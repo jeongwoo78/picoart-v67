@@ -36,7 +36,7 @@ export const orientalBasicInfo = {
 // ========== 1차 교육: 문화권 로딩 (Overview) ==========
 export const orientalOverview = {
   korean: {
-    title: '🇰🇷 한국 전통회화',
+    title: '한국 전통회화',
     desc: `선비는 먹으로, 민중은 색으로 그렸습니다.
 여백이 말하고, 붓끝에 정신을 담았습니다.
 민화, 풍속도, 진경산수화가 대표 장르입니다.
@@ -44,7 +44,7 @@ export const orientalOverview = {
   },
   
   chinese: {
-    title: '🇨🇳 중국 전통회화',
+    title: '중국 전통회화',
     desc: `먹의 농담으로 우주의 기운을 담았습니다.
 산과 물 사이에서 천 년의 철학이 흘렀습니다.
 수묵화와 공필화가 대표 장르입니다.
@@ -52,7 +52,7 @@ export const orientalOverview = {
   },
   
   japanese: {
-    title: '🇯🇵 일본 전통회화',
+    title: '일본 전통회화',
     desc: `덧없는 세상, 우키요를 그림으로 붙잡았습니다.
 파도, 게이샤, 벚꽃이 선명한 색채로 피어납니다.
 우키요에가 대표 장르입니다.
