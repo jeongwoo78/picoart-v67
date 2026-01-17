@@ -879,6 +879,23 @@ const ResultScreen = ({
       return education.desc;
     }
     
+    // v68: masterId로 못 찾으면 artist 이름으로 시도
+    const artistNameToKey = {
+      '반 고흐': 'vangogh', '빈센트 반 고흐': 'vangogh', 'van gogh': 'vangogh', 'vangogh': 'vangogh',
+      '클림트': 'klimt', '구스타프 클림트': 'klimt', 'klimt': 'klimt', 'gustav klimt': 'klimt',
+      '뭉크': 'munch', '에드바르 뭉크': 'munch', 'munch': 'munch', 'edvard munch': 'munch',
+      '마티스': 'matisse', '앙리 마티스': 'matisse', 'matisse': 'matisse', 'henri matisse': 'matisse',
+      '샤갈': 'chagall', '마르크 샤갈': 'chagall', 'chagall': 'chagall', 'marc chagall': 'chagall',
+      '피카소': 'picasso', '파블로 피카소': 'picasso', 'picasso': 'picasso', 'pablo picasso': 'picasso',
+      '프리다': 'frida', '프리다 칼로': 'frida', 'frida': 'frida', 'frida kahlo': 'frida',
+      '리히텐슈타인': 'lichtenstein', '로이 리히텐슈타인': 'lichtenstein', 'lichtenstein': 'lichtenstein', 'roy lichtenstein': 'lichtenstein'
+    };
+    const artistKey = artistNameToKey[artist] || artistNameToKey[artist.toLowerCase()];
+    if (artistKey && mastersEducation[artistKey]) {
+      const education = mastersEducation[artistKey];
+      return education.desc;
+    }
+    
     // ========== 2차 교육자료 (개별 작품) - 레거시 지원 ==========
     // aiSelectedWork가 있으면 해당 작품 키로 검색 (기존 로직 유지)
     if (aiSelectedWork) {
@@ -1386,7 +1403,7 @@ const ResultScreen = ({
     if (info) {
       return { 
         title: `${info.country}(${info.countryEn})`, 
-        subtitle: `${info.style}(${info.en})` 
+        subtitle: info.style  // v68: 영문 제거, 한글만
       };
     }
     
@@ -2467,7 +2484,19 @@ const ResultScreen = ({
                 {/* Card Header */}
                 <div className="card-header">
                   <div className="technique-icon">
-                    {isFullTransform ? (currentResult?.style?.icon || '🎨') : (selectedStyle.icon || '🎨')}
+                    {(() => {
+                      const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
+                      // v68: 동양화는 국기 아이콘
+                      if (category === 'oriental') {
+                        const artistName = displayArtist || '';
+                        const normalized = artistName.toLowerCase();
+                        if (normalized.includes('korea') || normalized.includes('민화') || normalized.includes('풍속') || normalized.includes('산수')) return '🇰🇷';
+                        if (normalized.includes('china') || normalized.includes('chinese') || normalized.includes('공필') || normalized.includes('수묵')) return '🇨🇳';
+                        if (normalized.includes('japan') || normalized.includes('ukiyo') || normalized.includes('우키요')) return '🇯🇵';
+                        return '🎨';
+                      }
+                      return isFullTransform ? (currentResult?.style?.icon || '🎨') : (selectedStyle.icon || '🎨');
+                    })()}
                   </div>
                   <div>
                     <h2>
@@ -2504,8 +2533,10 @@ const ResultScreen = ({
                           const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
                           const styleName = isFullTransform ? (currentResult?.style?.name || selectedStyle.name) : selectedStyle.name;
                           
+                          // v68 디버그
+                          console.log('🎨 [결과 부제]', { category, styleName, displayArtist, isFullTransform });
+                          
                           if (category === 'masters') {
-                            // v68: 결과 화면에서는 대표작 표시
                             const artistForDisplay = displayArtist || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
                             // masterId 추출: 'vangogh', 'klimt' 등
                             const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
@@ -2527,9 +2558,17 @@ const ResultScreen = ({
                               masterId = artistToMasterId[artistForDisplay] || artistToMasterId[normalized] || '';
                             }
                             
-                            // mastersBasicInfo에서 result.subtitle (대표작) 가져오기
-                            if (masterId && mastersBasicInfo[masterId]?.result?.subtitle) {
-                              return mastersBasicInfo[masterId].result.subtitle;
+                            // v68: 원클릭 = 대표작, 단독변환 = 화파·국가
+                            if (isFullTransform) {
+                              // 원클릭: 대표작 표시
+                              if (masterId && mastersBasicInfo[masterId]?.result?.subtitle) {
+                                return mastersBasicInfo[masterId].result.subtitle;
+                              }
+                            } else {
+                              // 단독변환: 화파·국가 표시
+                              if (masterId && mastersBasicInfo[masterId]?.loading?.subtitle) {
+                                return mastersBasicInfo[masterId].loading.subtitle;
+                              }
                             }
                             // fallback: 기존 movement
                             const masterInfo = getMasterInfo(artistForDisplay);
