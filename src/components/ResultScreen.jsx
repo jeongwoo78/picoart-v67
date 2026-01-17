@@ -1,41 +1,22 @@
-// PicoArt v69 - ResultScreen
+// PicoArt v51 - ResultScreen
 // 원클릭 교육자료 매칭: educationMatcher.js로 분리 (v51 새로 작성)
 // 2025-12-18 업데이트: 교육자료 매칭 로직 전면 재작성
-// v67: 결과 화면 개선 - 0번 원본 추가, 단독변환 점 제거, 바텀시트
-// v68: 거장(AI) 대화 기능 추가, 로딩/결과 화가 표시 분리
-// v69: masterData.js 통합 - 모든 사조/거장/동양화 데이터 일원화
-// ----------------------------------------
+// v68: 거장(AI) 대화 기능 추가
 
 import React, { useState, useEffect, useRef } from 'react';
-// import BeforeAfter from './BeforeAfter';  // v67.3: 단독변환도 스와이프 방식으로 변경
+import BeforeAfter from './BeforeAfter';
 import MasterChat from './MasterChat';
-// import BottomSheet from './BottomSheet';  // v68: 사용하지 않음 - 제거
 import { orientalSecondary, orientalStory } from '../data/educationContent';
 import { movementsPrimary, movementsSecondary, movementsStory } from '../data/educationContent';
 import { mastersPrimary, mastersSecondary, mastersStory } from '../data/educationContent';
-// 단독변환 교육자료 (v67.3)
-import { mastersEducation, mastersBasicInfo } from '../data/mastersEducation';
-import { movementsOverview, movementsEducation, movementsBasicInfo } from '../data/movementsEducation';
-import { orientalOverview, orientalEducation, orientalBasicInfo } from '../data/orientalEducation';
-// 원클릭 전용 교육자료 (분리된 파일) - v68: Full/UI 구분 제거
-import { oneclickMovementsPrimary, oneclickMovementsSecondary } from '../data/oneclickMovementsEducation';
-import { oneclickMastersPrimary, oneclickMastersSecondary } from '../data/oneclickMastersEducation';
-import { oneclickOrientalPrimary, oneclickOrientalSecondary } from '../data/oneclickOrientalEducation';
+// 원클릭 전용 교육자료 (분리된 파일)
+import { oneclickMovementsSecondary } from '../data/oneclickMovementsEducation';
+import { oneclickMastersSecondary } from '../data/oneclickMastersEducation';
+import { oneclickOrientalSecondary } from '../data/oneclickOrientalEducation';
 import { saveToGallery } from './GalleryScreen';
 import { processStyleTransfer } from '../utils/styleTransferAPI';
 // v51: 새로운 교육자료 매칭 유틸리티
 import { getEducationKey, getEducationContent } from '../utils/educationMatcher';
-// v69: 마스터 데이터 (Single Source of Truth)
-import { 
-  MOVEMENTS, MASTERS, ORIENTAL, MOVEMENT_ARTISTS,
-  MODERNISM_SUB, NINETEENTH_CENTURY_SUB, ART_NOUVEAU,
-  CATEGORY_ICONS,
-  getMovementDisplayInfo as masterGetMovementDisplayInfo,
-  getOrientalDisplayInfo as masterGetOrientalDisplayInfo,
-  findArtistByName,
-  findMasterByNameOrWork,
-  findOrientalStyle
-} from '../data/masterData';
 
 
 const ResultScreen = ({ 
@@ -80,20 +61,16 @@ const ResultScreen = ({
   
   // fullTransformResults가 변경되면 results도 업데이트
   useEffect(() => {
-    if (fullTransformResults && Array.isArray(fullTransformResults)) {
+    if (fullTransformResults) {
       setResults(fullTransformResults);
     }
   }, [fullTransformResults]);
   
-  // 안전한 results 배열 (항상 배열 보장)
-  const safeResults = Array.isArray(results) ? results : [];
-  
   // 실패한 결과 개수
-  const failedCount = safeResults.filter(r => !r.success).length;
+  const failedCount = results.filter(r => !r.success).length;
   
-  // 현재 보여줄 결과 - v67.2: 0번은 원본, 1~N번이 결과
-  // currentIndex 0 = 원본, currentIndex 1 = safeResults[0], currentIndex 2 = safeResults[1], ...
-  const currentResult = isFullTransform && currentIndex > 0 ? safeResults[currentIndex - 1] : null;
+  // 현재 보여줄 결과
+  const currentResult = isFullTransform ? results[currentIndex] : null;
   // 단독변환: 재시도 성공 시 singleRetryResult 사용
   const [singleRetryResultState, setSingleRetryResultState] = useState(null);
   const displayImage = isFullTransform 
@@ -113,15 +90,6 @@ const ResultScreen = ({
   const [isLoadingEducation, setIsLoadingEducation] = useState(true);
   const [savedToGallery, setSavedToGallery] = useState(false);
   const hasSavedRef = useRef(false);
-  
-  // ========== v67.3: 단독변환용 인덱스 상태 ==========
-  // v68: 초기값 1 (결과)로 변경 - 결과 화면 진입 시 결과부터 보여주기
-  const [singleIndex, setSingleIndex] = useState(1);
-  
-  // ========== v67.2: 0번 원본 판단 (원클릭 + 단독변환 통합) ==========
-  // 원클릭: currentIndex === 0일 때 원본
-  // 단독변환: singleIndex === 0일 때 원본
-  const isOriginalView = isFullTransform ? currentIndex === 0 : singleIndex === 0;
 
   // ========== 거장 AI 대화 관련 State (v68) ==========
   // 재변환 상태 (App.jsx에서 관리, 객체로 안전하게)
@@ -332,18 +300,18 @@ const ResultScreen = ({
   const handleRetry = async () => {
     if (!originalPhoto || isRetrying) return;
     
-    const failedResults = safeResults.filter(r => !r.success);
+    const failedResults = results.filter(r => !r.success);
     if (failedResults.length === 0) return;
     
     setIsRetrying(true);
     // console.log(`🔄 다시 시도 시작: ${failedResults.length}개 실패한 변환`);
     
     let successCount = 0;
-    let updatedResults = [...safeResults];  // 업데이트된 결과 추적용
+    let updatedResults = [...results];  // 업데이트된 결과 추적용
     
     for (let i = 0; i < failedResults.length; i++) {
       const failed = failedResults[i];
-      const failedIndex = safeResults.findIndex(r => r.style?.id === failed.style?.id);
+      const failedIndex = results.findIndex(r => r.style?.id === failed.style?.id);
       
       setRetryProgress('다시 시도 중...');
       
@@ -463,7 +431,7 @@ const ResultScreen = ({
   useEffect(() => {
     // console.log('🎨 ResultScreen mounted or aiSelectedArtist changed');
     generate2ndEducation();
-  }, [aiSelectedArtist, currentIndex, currentResult?.aiSelectedArtist, currentResult?.selected_work, safeResults.length]);
+  }, [aiSelectedArtist, currentIndex, currentResult?.aiSelectedArtist, currentResult?.selected_work]);
 
   // 원클릭: 화면 이동 시 현재 결과 로그
   useEffect(() => {
@@ -477,7 +445,7 @@ const ResultScreen = ({
       const work = currentResult.selected_work;
       
       console.log('');
-      console.log(`📍 [${currentIndex + 1}/${safeResults.length}] ─────────────────────`);
+      console.log(`📍 [${currentIndex + 1}/${results.length}] ─────────────────────`);
       
       if (category === 'masters') {
         const masterInfo = getMasterInfo(artist);
@@ -506,93 +474,12 @@ const ResultScreen = ({
         console.log(`   ❌ 에러: ${currentResult.error}`);
       }
     }
-  }, [currentIndex, isFullTransform, currentResult, safeResults.length]);
+  }, [currentIndex, isFullTransform, currentResult, results.length]);
 
 
   // ========== 원클릭용 키 매칭 (v51: educationMatcher.js 사용) ==========
   // 기존 복잡한 로직을 educationMatcher.js로 분리함
 
-  // ========== v67.2: 1차 교육 가져오기 (원본 0번용) ==========
-  const getPrimaryEducation = () => {
-    if (!isFullTransform) return null;
-    
-    // 카테고리 확인 (첫 번째 결과의 카테고리 또는 selectedStyle)
-    const category = results[0]?.style?.category || selectedStyle?.category;
-    if (!category) return null;
-    
-    // 카테고리별 1차 교육 데이터 (v68: Full/UI 통합)
-    const primaryData = {
-      movements: oneclickMovementsPrimary,
-      masters: oneclickMastersPrimary,
-      oriental: oneclickOrientalPrimary
-    };
-    
-    return {
-      ui: primaryData[category],
-      full: primaryData[category],  // v68: 동일 데이터
-      category
-    };
-  };
-
-  // ========== v67.3: 단독변환용 1차 교육 가져오기 ==========
-  const getSinglePrimaryEducation = () => {
-    if (isFullTransform) return null;
-    
-    const category = selectedStyle?.category;
-    const styleName = selectedStyle?.name;
-    const styleValue = selectedStyle?.style || selectedStyle?.id;  // style 또는 id 사용
-    
-    console.log('🔍 [getSinglePrimaryEducation]', { category, styleName, styleValue, selectedStyle });
-    
-    if (category === 'masters') {
-      // 거장: mastersEducation에서 찾기
-      // styleValue가 이미 'chagall-master' 형태일 수 있음
-      const key = styleValue?.endsWith('-master') ? styleValue : `${styleValue}-master`;
-      const edu = mastersEducation[key];
-      console.log('🔍 [거장 교육]', { key, found: !!edu });
-      if (edu) {
-        // v68: 제목은 mastersBasicInfo에서 풀네임 사용
-        const masterId = styleValue?.replace('-master', '') || '';
-        const basicInfo = mastersBasicInfo[masterId];
-        return {
-          title: basicInfo?.loading?.name || edu.title,
-          content: edu.desc,
-          category: 'masters'
-        };
-      }
-    } else if (category === 'movements') {
-      // 미술사조: movementsOverview에서 찾기 (styleValue = 영문 키)
-      const edu = movementsOverview[styleValue];
-      if (edu) {
-        // v68: 제목은 movementsBasicInfo에서 영문/기간 포함된 name 사용
-        const basicInfo = movementsBasicInfo[styleValue];
-        return {
-          title: basicInfo?.loading?.name || edu.title || styleName,
-          content: edu.desc,
-          category: 'movements'
-        };
-      }
-    } else if (category === 'oriental') {
-      // 동양화: orientalOverview에서 찾기 (styleValue = 영문 키)
-      const edu = orientalOverview[styleValue];
-      if (edu) {
-        // v68: 제목은 orientalBasicInfo에서 영문 포함된 name 사용
-        const basicInfo = orientalBasicInfo[styleValue];
-        return {
-          title: basicInfo?.loading?.name || edu.title || styleName,
-          content: edu.desc,
-          category: 'oriental'
-        };
-      }
-    }
-    
-    // 기본값
-    return {
-      title: styleName || '스타일 변환',
-      content: `${styleName} 스타일로 변환됩니다.`,
-      category: category
-    };
-  };
 
   // ========== 2차 교육 로드 (v51: 새로운 매칭 로직) ==========
   const generate2ndEducation = () => {
@@ -610,13 +497,6 @@ const ResultScreen = ({
     
     // ========== 원클릭: 새로운 매칭 로직 사용 ==========
     if (isFullTransform) {
-      // v70: 원클릭 모드에서 결과가 아직 로드되지 않았으면 스킵
-      if (!currentResult && currentIndex > 0) {
-        console.log('⏳ 원클릭: 결과 로딩 대기 중...');
-        setIsLoadingEducation(false);
-        return;
-      }
-      
       // console.log('📜 ONECLICK MODE - using educationMatcher.js');
       
       // currentResult에서 정보 추출
@@ -825,23 +705,6 @@ const ResultScreen = ({
       // console.log('✅ Found 2nd education (화풍 설명)!');
       // console.log('   - title:', education.title);
       // console.log('   - desc length:', education.desc?.length);
-      return education.desc;
-    }
-    
-    // v68: masterId로 못 찾으면 artist 이름으로 시도
-    const artistNameToKey = {
-      '반 고흐': 'vangogh', '빈센트 반 고흐': 'vangogh', 'van gogh': 'vangogh', 'vangogh': 'vangogh',
-      '클림트': 'klimt', '구스타프 클림트': 'klimt', 'klimt': 'klimt', 'gustav klimt': 'klimt',
-      '뭉크': 'munch', '에드바르 뭉크': 'munch', 'munch': 'munch', 'edvard munch': 'munch',
-      '마티스': 'matisse', '앙리 마티스': 'matisse', 'matisse': 'matisse', 'henri matisse': 'matisse',
-      '샤갈': 'chagall', '마르크 샤갈': 'chagall', 'chagall': 'chagall', 'marc chagall': 'chagall',
-      '피카소': 'picasso', '파블로 피카소': 'picasso', 'picasso': 'picasso', 'pablo picasso': 'picasso',
-      '프리다': 'frida', '프리다 칼로': 'frida', 'frida': 'frida', 'frida kahlo': 'frida',
-      '리히텐슈타인': 'lichtenstein', '로이 리히텐슈타인': 'lichtenstein', 'lichtenstein': 'lichtenstein', 'roy lichtenstein': 'lichtenstein'
-    };
-    const artistKey = artistNameToKey[artist] || artistNameToKey[artist.toLowerCase()];
-    if (artistKey && mastersEducation[artistKey]) {
-      const education = mastersEducation[artistKey];
       return education.desc;
     }
     
@@ -1099,18 +962,230 @@ const ResultScreen = ({
     return { fullName: artistName, movement: '' };
   };
 
-  // ========== 미술사조 표시용 함수 (v68: masterData 사용) ==========
+  // ========== 미술사조 표시용 함수 (v67: 새 표기 형식) ==========
   // 제목: 사조(영문, 시기)
-  // 부제: 화가명
+  // 부제: 화가명(생몰연도)
   const getMovementDisplayInfo = (styleName, artistName) => {
-    return masterGetMovementDisplayInfo(styleName, artistName);
+    // 사조별 영문명, 시기
+    const movementInfo = {
+      '고대': { en: 'Ancient', period: 'BC~AD 4세기' },
+      '그리스·로마': { en: 'Greco-Roman', period: 'BC~AD 4세기' },
+      '중세': { en: 'Medieval', period: '5~15세기' },
+      '중세 미술': { en: 'Medieval', period: '5~15세기' },
+      '르네상스': { en: 'Renaissance', period: '14~16세기' },
+      '바로크': { en: 'Baroque', period: '17~18세기' },
+      '로코코': { en: 'Rococo', period: '18세기' },
+      '신고전주의': { en: 'Neoclassicism', period: '18~19세기' },
+      '낭만주의': { en: 'Romanticism', period: '19세기' },
+      '사실주의': { en: 'Realism', period: '19세기' },
+      '신고전 vs 낭만 vs 사실주의': { en: 'Neoclassicism·Romanticism·Realism', period: '18~19세기' },
+      '인상주의': { en: 'Impressionism', period: '19세기 말' },
+      '후기인상주의': { en: 'Post-Impressionism', period: '19세기 말' },
+      '야수파': { en: 'Fauvism', period: '20세기 초' },
+      '표현주의': { en: 'Expressionism', period: '20세기 초' },
+      '아르누보': { en: 'Art Nouveau', period: '19세기 말' },
+      '20세기 모더니즘': { en: 'Modernism', period: '20세기' },
+      // 20세기 모더니즘 세부 사조
+      '입체주의': { en: 'Cubism', period: '20세기 초' },
+      '초현실주의': { en: 'Surrealism', period: '20세기 초중반' },
+      '팝아트': { en: 'Pop Art', period: '20세기 중반' },
+    };
+    
+    // 화가별 풀네임, 생몰연도
+    const artistInfo = {
+      // 고대
+      'greek sculpture': { name: '그리스 조각', years: '' },
+      'roman mosaic': { name: '로마 모자이크', years: '' },
+      // 중세
+      'byzantine': { name: '비잔틴', years: '' },
+      'gothic': { name: '고딕', years: '' },
+      'islamic miniature': { name: '이슬람 세밀화', years: '' },
+      // 르네상스
+      'leonardo': { name: '레오나르도 다 빈치', years: '1452~1519' },
+      'leonardo da vinci': { name: '레오나르도 다 빈치', years: '1452~1519' },
+      'michelangelo': { name: '미켈란젤로 부오나로티', years: '1475~1564' },
+      'raphael': { name: '라파엘로 산치오', years: '1483~1520' },
+      'botticelli': { name: '산드로 보티첼리', years: '1445~1510' },
+      'titian': { name: '티치아노 베첼리오', years: '1488~1576' },
+      // 바로크
+      'caravaggio': { name: '미켈란젤로 메리시 다 카라바조', years: '1571~1610' },
+      'rembrandt': { name: '렘브란트 판 레인', years: '1606~1669' },
+      'velazquez': { name: '디에고 벨라스케스', years: '1599~1660' },
+      'velázquez': { name: '디에고 벨라스케스', years: '1599~1660' },
+      'rubens': { name: '피터 파울 루벤스', years: '1577~1640' },
+      // 로코코
+      'watteau': { name: '장 앙투안 와토', years: '1684~1721' },
+      'boucher': { name: '프랑수아 부셰', years: '1703~1770' },
+      'françois boucher': { name: '프랑수아 부셰', years: '1703~1770' },
+      'fragonard': { name: '장 오노레 프라고나르', years: '1732~1806' },
+      // 신고전주의
+      'david': { name: '자크 루이 다비드', years: '1748~1825' },
+      'jacques-louis david': { name: '자크 루이 다비드', years: '1748~1825' },
+      'ingres': { name: '장 오귀스트 도미니크 앵그르', years: '1780~1867' },
+      'jean-auguste-dominique ingres': { name: '장 오귀스트 도미니크 앵그르', years: '1780~1867' },
+      // 낭만주의
+      'delacroix': { name: '외젠 들라크루아', years: '1798~1863' },
+      'eugène delacroix': { name: '외젠 들라크루아', years: '1798~1863' },
+      'eugene delacroix': { name: '외젠 들라크루아', years: '1798~1863' },
+      'turner': { name: '조지프 말러드 윌리엄 터너', years: '1775~1851' },
+      'j.m.w. turner': { name: '조지프 말러드 윌리엄 터너', years: '1775~1851' },
+      'joseph mallord william turner': { name: '조지프 말러드 윌리엄 터너', years: '1775~1851' },
+      'goya': { name: '프란시스코 고야', years: '1746~1828' },
+      'francisco goya': { name: '프란시스코 고야', years: '1746~1828' },
+      'francisco de goya': { name: '프란시스코 고야', years: '1746~1828' },
+      // 사실주의
+      'courbet': { name: '귀스타브 쿠르베', years: '1819~1877' },
+      'gustave courbet': { name: '귀스타브 쿠르베', years: '1819~1877' },
+      'millet': { name: '장 프랑수아 밀레', years: '1814~1875' },
+      'jean-françois millet': { name: '장 프랑수아 밀레', years: '1814~1875' },
+      'jean-francois millet': { name: '장 프랑수아 밀레', years: '1814~1875' },
+      // 인상주의
+      'monet': { name: '클로드 모네', years: '1840~1926' },
+      'claude monet': { name: '클로드 모네', years: '1840~1926' },
+      'renoir': { name: '피에르 오귀스트 르누아르', years: '1841~1919' },
+      'pierre-auguste renoir': { name: '피에르 오귀스트 르누아르', years: '1841~1919' },
+      'degas': { name: '에드가 드가', years: '1834~1917' },
+      'manet': { name: '에두아르 마네', years: '1832~1883' },
+      'morisot': { name: '베르트 모리조', years: '1841~1895' },
+      'berthe morisot': { name: '베르트 모리조', years: '1841~1895' },
+      'caillebotte': { name: '귀스타브 카유보트', years: '1848~1894' },
+      'gustave caillebotte': { name: '귀스타브 카유보트', years: '1848~1894' },
+      // 후기인상주의
+      'van gogh': { name: '빈센트 반 고흐', years: '1853~1890' },
+      'vincent van gogh': { name: '빈센트 반 고흐', years: '1853~1890' },
+      'gauguin': { name: '폴 고갱', years: '1848~1903' },
+      'paul gauguin': { name: '폴 고갱', years: '1848~1903' },
+      'cezanne': { name: '폴 세잔', years: '1839~1906' },
+      'cézanne': { name: '폴 세잔', years: '1839~1906' },
+      // 야수파
+      'matisse': { name: '앙리 마티스', years: '1869~1954' },
+      'henri matisse': { name: '앙리 마티스', years: '1869~1954' },
+      'derain': { name: '앙드레 드랭', years: '1880~1954' },
+      'andré derain': { name: '앙드레 드랭', years: '1880~1954' },
+      'andre derain': { name: '앙드레 드랭', years: '1880~1954' },
+      'vlaminck': { name: '모리스 드 블라맹크', years: '1876~1958' },
+      'maurice de vlaminck': { name: '모리스 드 블라맹크', years: '1876~1958' },
+      // 표현주의
+      'munch': { name: '에드바르 뭉크', years: '1863~1944' },
+      'edvard munch': { name: '에드바르 뭉크', years: '1863~1944' },
+      'kirchner': { name: '에른스트 루트비히 키르히너', years: '1880~1938' },
+      'ernst ludwig kirchner': { name: '에른스트 루트비히 키르히너', years: '1880~1938' },
+      'kokoschka': { name: '오스카 코코슈카', years: '1886~1980' },
+      'oskar kokoschka': { name: '오스카 코코슈카', years: '1886~1980' },
+      // 20세기 모더니즘 (워홀 제거)
+      'picasso': { name: '파블로 피카소', years: '1881~1973' },
+      'pablo picasso': { name: '파블로 피카소', years: '1881~1973' },
+      'lichtenstein': { name: '로이 리히텐슈타인', years: '1923~1997' },
+      'roy lichtenstein': { name: '로이 리히텐슈타인', years: '1923~1997' },
+      'haring': { name: '키스 해링', years: '1958~1990' },
+      'keith haring': { name: '키스 해링', years: '1958~1990' },
+      'miro': { name: '호안 미로', years: '1893~1983' },
+      'miró': { name: '호안 미로', years: '1893~1983' },
+      'joan miro': { name: '호안 미로', years: '1893~1983' },
+      'joan miró': { name: '호안 미로', years: '1893~1983' },
+      'magritte': { name: '르네 마그리트', years: '1898~1967' },
+      'rené magritte': { name: '르네 마그리트', years: '1898~1967' },
+      'rene magritte': { name: '르네 마그리트', years: '1898~1967' },
+      'chagall': { name: '마르크 샤갈', years: '1887~1985' },
+      'marc chagall': { name: '마르크 샤갈', years: '1887~1985' },
+    };
+    
+    // 제목 생성: 사조(영문, 시기)
+    let actualMovement = styleName;
+    
+    // "신고전 vs 낭만 vs 사실주의"인 경우 화가에 따라 사조 결정
+    if (styleName === '신고전 vs 낭만 vs 사실주의' && artistName) {
+      const normalized = artistName.toLowerCase().trim();
+      // 신고전주의 화가
+      if (['david', 'jacques-louis david', 'ingres', 'jean-auguste-dominique ingres'].includes(normalized)) {
+        actualMovement = '신고전주의';
+      }
+      // 낭만주의 화가
+      else if (['delacroix', 'eugène delacroix', 'eugene delacroix', 'turner', 'j.m.w. turner', 'joseph mallord william turner'].includes(normalized)) {
+        actualMovement = '낭만주의';
+      }
+      // 사실주의 화가
+      else if (['courbet', 'gustave courbet', 'manet', 'édouard manet', 'edouard manet'].includes(normalized)) {
+        actualMovement = '사실주의';
+      }
+    }
+    
+    // "20세기 모더니즘"인 경우 화가에 따라 사조 결정
+    if (styleName === '20세기 모더니즘' && artistName) {
+      const normalized = artistName.toLowerCase().trim();
+      // 입체주의 화가
+      if (['picasso', 'pablo picasso'].includes(normalized)) {
+        actualMovement = '입체주의';
+      }
+      // 초현실주의 화가
+      else if (['magritte', 'rené magritte', 'rene magritte', 'miro', 'miró', 'joan miro', 'joan miró', 'chagall', 'marc chagall'].includes(normalized)) {
+        actualMovement = '초현실주의';
+      }
+      // 팝아트 화가 (워홀 제거)
+      else if (['lichtenstein', 'roy lichtenstein', 'haring', 'keith haring'].includes(normalized)) {
+        actualMovement = '팝아트';
+      }
+    }
+    
+    const mvInfo = movementInfo[actualMovement] || { en: styleName, period: '' };
+    const title = mvInfo.period ? `${actualMovement}(${mvInfo.en}, ${mvInfo.period})` : `${actualMovement}(${mvInfo.en})`;
+    
+    // 부제 생성: 화가명만 (생몰연도 제거)
+    const normalized = artistName ? artistName.toLowerCase().trim() : '';
+    const artInfo = artistInfo[normalized] || { name: artistName, years: '' };
+    const subtitle = artInfo.name;
+    
+    return { title, subtitle };
   };
 
-  // ========== 동양화 표시용 함수 (v68: masterData 사용) ==========
+  // ========== 동양화 표시용 함수 (v67: 새 표기 형식) ==========
   // 제목: 국가 전통회화(영문)
-  // 부제: 스타일
+  // 부제: 스타일(영문)
   const getOrientalDisplayInfo = (artistName) => {
-    return masterGetOrientalDisplayInfo(artistName);
+    const orientalMap = {
+      // 한국
+      'korean minhwa': { country: '한국 전통회화', countryEn: 'Korean Traditional Painting', style: '민화', en: 'Minhwa' },
+      'korean pungsokdo': { country: '한국 전통회화', countryEn: 'Korean Traditional Painting', style: '풍속도', en: 'Pungsokdo' },
+      'korean jingyeong': { country: '한국 전통회화', countryEn: 'Korean Traditional Painting', style: '진경산수화', en: 'Jingyeong' },
+      '민화': { country: '한국 전통회화', countryEn: 'Korean Traditional Painting', style: '민화', en: 'Minhwa' },
+      '풍속화': { country: '한국 전통회화', countryEn: 'Korean Traditional Painting', style: '풍속도', en: 'Pungsokdo' },
+      '풍속도': { country: '한국 전통회화', countryEn: 'Korean Traditional Painting', style: '풍속도', en: 'Pungsokdo' },
+      '진경산수': { country: '한국 전통회화', countryEn: 'Korean Traditional Painting', style: '진경산수화', en: 'Jingyeong' },
+      '진경산수화': { country: '한국 전통회화', countryEn: 'Korean Traditional Painting', style: '진경산수화', en: 'Jingyeong' },
+      // 중국
+      'chinese gongbi': { country: '중국 전통회화', countryEn: 'Chinese Traditional Painting', style: '공필화', en: 'Gongbi' },
+      'chinese ink wash': { country: '중국 전통회화', countryEn: 'Chinese Traditional Painting', style: '수묵화', en: 'Ink Wash' },
+      '공필화': { country: '중국 전통회화', countryEn: 'Chinese Traditional Painting', style: '공필화', en: 'Gongbi' },
+      '수묵화': { country: '중국 전통회화', countryEn: 'Chinese Traditional Painting', style: '수묵화', en: 'Ink Wash' },
+      // 일본
+      'japanese ukiyo-e': { country: '일본 전통회화', countryEn: 'Japanese Traditional Painting', style: '우키요에', en: 'Ukiyo-e' },
+      '우키요에': { country: '일본 전통회화', countryEn: 'Japanese Traditional Painting', style: '우키요에', en: 'Ukiyo-e' },
+      '일본 우키요에': { country: '일본 전통회화', countryEn: 'Japanese Traditional Painting', style: '우키요에', en: 'Ukiyo-e' },
+    };
+    
+    const normalized = artistName ? artistName.toLowerCase().trim() : '';
+    
+    // 직접 매핑
+    let info = orientalMap[normalized] || orientalMap[artistName];
+    
+    // 부분 매칭
+    if (!info) {
+      for (const [key, value] of Object.entries(orientalMap)) {
+        if (normalized.includes(key.toLowerCase()) || key.toLowerCase().includes(normalized)) {
+          info = value;
+          break;
+        }
+      }
+    }
+    
+    if (info) {
+      return { 
+        title: `${info.country}(${info.countryEn})`, 
+        subtitle: `${info.style}(${info.en})` 
+      };
+    }
+    
+    return { title: '동양화', subtitle: artistName || '' };
   };
 
   // ========== 갤러리용 짧은 이름 포맷: 한글(영문) ==========
@@ -1146,11 +1221,7 @@ const ResultScreen = ({
         'lichtenstein': { name: '리히텐슈타인', years: '1923~1997', movement: '팝아트' },
         'roy lichtenstein': { name: '리히텐슈타인', years: '1923~1997', movement: '팝아트' },
         '리히텐슈타인': { name: '리히텐슈타인', years: '1923~1997', movement: '팝아트' },
-        '로이 리히텐슈타인': { name: '리히텐슈타인', years: '1923~1997', movement: '팝아트' },
-        'chagall': { name: '샤갈', years: '1887~1985', movement: '초현실주의' },
-        'marc chagall': { name: '샤갈', years: '1887~1985', movement: '초현실주의' },
-        '샤갈': { name: '샤갈', years: '1887~1985', movement: '초현실주의' },
-        '마르크 샤갈': { name: '샤갈', years: '1887~1985', movement: '초현실주의' }
+        '로이 리히텐슈타인': { name: '리히텐슈타인', years: '1923~1997', movement: '팝아트' }
       };
       
       const info = mastersInfo[normalized] || mastersInfo[artistName];
@@ -1479,14 +1550,63 @@ const ResultScreen = ({
   };
 
 
-  // ========== 동양화 스타일명 포맷 통일 (v68: masterData 사용) ==========
+  // ========== 동양화 스타일명 포맷 통일 ==========
   const formatOrientalStyle = (styleName) => {
     if (!styleName) return '동양화 기법';
     
-    // masterData에서 동양화 스타일 찾기
-    const result = findOrientalStyle(styleName);
-    if (result) {
-      return `${result.style.ko}(${result.style.en})`;
+    const normalized = styleName.toLowerCase().trim();
+    
+    // 동양화 스타일 통일 매핑: 한글명(영문명)
+    const orientalMap = {
+      // 한국
+      '한국 전통화': '민화(Minhwa)',
+      'korean-genre': '풍속도(Pungsokdo)',
+      'korean-minhwa': '민화(Minhwa)',
+      'korean-jingyeong': '진경산수화(Jingyeong)',
+      
+      // 중국
+      'chinese gongbi': '공필화(Gongbi)',
+      'chinese-gongbi': '공필화(Gongbi)',
+      'gongbi': '공필화(Gongbi)',
+      'chinese-ink': '수묵화(Ink Wash)',
+      'chinese-ink-wash': '수묵화(Ink Wash)',
+      'chinese-huaniao': '화조화(Huaniao)',
+      
+      // 일본
+      '일본 우키요에': '우키요에(Ukiyo-e)',
+      'japanese-ukiyoe': '우키요에(Ukiyo-e)',
+      'ukiyoe': '우키요에(Ukiyo-e)',
+      'ukiyo-e': '우키요에(Ukiyo-e)'
+    };
+    
+    // 정확한 매칭
+    if (orientalMap[styleName]) {
+      return orientalMap[styleName];
+    }
+    if (orientalMap[normalized]) {
+      return orientalMap[normalized];
+    }
+    
+    // 부분 매칭 - 한국
+    if (normalized.includes('minhwa') || normalized.includes('민화')) {
+      return '민화(Minhwa)';
+    }
+    if (normalized.includes('pungsok') || normalized.includes('genre') || normalized.includes('풍속')) {
+      return '풍속도(Pungsokdo)';
+    }
+    if (normalized.includes('jingyeong') || normalized.includes('진경')) {
+      return '진경산수화(Jingyeong)';
+    }
+    // 부분 매칭 - 중국
+    if (normalized.includes('gongbi') || normalized.includes('공필')) {
+      return '공필화(Gongbi)';
+    }
+    if (normalized.includes('ink') || normalized.includes('수묵')) {
+      return '수묵화(Ink Wash)';
+    }
+    // 부분 매칭 - 일본
+    if (normalized.includes('ukiyo') || normalized.includes('우키요에')) {
+      return '우키요에(Ukiyo-e)';
     }
     
     // 매핑에 없으면 원본 반환
@@ -1494,60 +1614,281 @@ const ResultScreen = ({
   };
 
 
-  // ========== 화가명 포맷팅 (v68: masterData 사용) ==========
+  // ========== 화가 이름 한글(Full Name) 변환 ==========
   const formatArtistName = (artistName) => {
     if (!artistName) return '예술 스타일';
     
-    // masterData에서 화가 정보 찾기
-    const artist = findArtistByName(artistName);
-    if (artist) {
-      // 한글명(영문명) 형식으로 반환
-      return `${artist.ko}(${artist.en})`;
+    const normalized = artistName.toLowerCase().trim();
+    // console.log('🎨 formatArtistName input:', artistName);
+    // console.log('🎨 formatArtistName normalized:', normalized);
+    
+    // 영문 이름 → 한글 풀네임(Full Name) 매핑
+    const nameMap = {
+      // 고대 미술
+      'ancient-greek-sculpture': '고대 조각(Ancient Sculpture)',
+      'ancient-sculpture': '고대 조각(Ancient Sculpture)',
+      'classical-sculpture': '고대 조각(Ancient Sculpture)',
+      'classical sculpture': '고대 조각(Classical Sculpture)',
+      'greek-sculpture': '고대 조각(Ancient Sculpture)',
+      'roman-mosaic': '로마 모자이크(Roman Mosaic)',
+      'ancient-mosaic': '로마 모자이크(Roman Mosaic)',
+      'mosaic': '로마 모자이크(Roman Mosaic)',
+      
+      // 중세 미술
+      'byzantine': '비잔틴(Byzantine)',
+      'byzantine mosaic': '비잔틴 모자이크(Byzantine Mosaic)',
+      'gothic': '고딕(Gothic)',
+      'gothic stained glass': '고딕 스테인드글라스(Gothic Stained Glass)',
+      'romanesque': '로마네스크(Romanesque)',
+      'islamic miniature': '이슬람 세밀화(Islamic Miniature)',
+      'islamic geometry': '이슬람 기하학(Islamic Geometry)',
+      
+      // 르네상스
+      'leonardo': '레오나르도 다 빈치(Leonardo da Vinci)',
+      'leonardo da vinci': '레오나르도 다 빈치(Leonardo da Vinci)',
+      'michelangelo': '미켈란젤로 부오나로티(Michelangelo Buonarroti)',
+      'raphael': '라파엘로 산치오(Raffaello Sanzio)',
+      'botticelli': '산드로 보티첼리(Sandro Botticelli)',
+      'titian': '티치아노 베첼리오(Tiziano Vecellio)',
+      
+      // 바로크
+      'caravaggio': '미켈란젤로 메리시 다 카라바조(Caravaggio)',
+      'michelangelo merisi da caravaggio': '미켈란젤로 메리시 다 카라바조(Caravaggio)',
+      'rembrandt': '렘브란트 판 레인(Rembrandt van Rijn)',
+      'velazquez': '디에고 벨라스케스(Diego Velázquez)',
+      'rubens': '피터 파울 루벤스(Peter Paul Rubens)',
+      'peter paul rubens': '피터 파울 루벤스(Peter Paul Rubens)',
+      
+      // 로코코
+      'watteau': '장 앙투안 와토(Jean-Antoine Watteau)',
+      'jean-antoine watteau': '장 앙투안 와토(Jean-Antoine Watteau)',
+      'boucher': '프랑수아 부셰(François Boucher)',
+      'françois boucher': '프랑수아 부셰(François Boucher)',
+      'francois boucher': '프랑수아 부셰(François Boucher)',
+      'jean-honoré fragonard': '장 오노레 프라고나르(Jean-Honoré Fragonard)',
+      'jean-honore fragonard': '장 오노레 프라고나르(Jean-Honoré Fragonard)',
+      'fragonard': '장 오노레 프라고나르(Jean-Honoré Fragonard)',
+      
+      // 신고전주의
+      'jacques-louis-david': '자크 루이 다비드(Jacques-Louis David)',
+      'david': '자크 루이 다비드(Jacques-Louis David)',
+      'ingres': '장 오귀스트 도미니크 앵그르(Jean-Auguste-Dominique Ingres)',
+      'jean-auguste-dominique ingres': '장 오귀스트 도미니크 앵그르(Jean-Auguste-Dominique Ingres)',
+      
+      // 낭만주의
+      'turner': '윌리엄 터너(J.M.W. Turner)',
+      'j.m.w. turner': '윌리엄 터너(J.M.W. Turner)',
+      'william turner': '윌리엄 터너(J.M.W. Turner)',
+      'friedrich': '카스파르 다비드 프리드리히(Caspar David Friedrich)',
+      'caspar david friedrich': '카스파르 다비드 프리드리히(Caspar David Friedrich)',
+      'delacroix': '외젠 들라크루아(Eugène Delacroix)',
+      'eugène delacroix': '외젠 들라크루아(Eugène Delacroix)',
+      'eugene delacroix': '외젠 들라크루아(Eugène Delacroix)',
+      'goya': '프란시스코 고야(Francisco Goya)',
+      'francisco goya': '프란시스코 고야(Francisco Goya)',
+      
+      // 사실주의
+      'millet': '장 프랑수아 밀레(Jean-François Millet)',
+      'jean-françois millet': '장 프랑수아 밀레(Jean-François Millet)',
+      'jean-francois millet': '장 프랑수아 밀레(Jean-François Millet)',
+      'manet': '에두아르 마네(Édouard Manet)',
+      'édouard manet': '에두아르 마네(Édouard Manet)',
+      'edouard manet': '에두아르 마네(Édouard Manet)',
+      
+      // 인상주의
+      'monet': '클로드 모네(Claude Monet)',
+      'claude monet': '클로드 모네(Claude Monet)',
+      'renoir': '피에르 오귀스트 르누아르(Pierre-Auguste Renoir)',
+      'pierre-auguste renoir': '피에르 오귀스트 르누아르(Pierre-Auguste Renoir)',
+      'degas': '에드가 드가(Edgar Degas)',
+      'edgar degas': '에드가 드가(Edgar Degas)',
+      'caillebotte': '귀스타브 카유보트(Gustave Caillebotte)',
+      'gustave caillebotte': '귀스타브 카유보트(Gustave Caillebotte)',
+      
+      // 후기인상주의
+      'van gogh': '빈센트 반 고흐(Vincent van Gogh)',
+      'vincent van gogh': '빈센트 반 고흐(Vincent van Gogh)',
+      'cézanne': '폴 세잔(Paul Cézanne)',
+      'cezanne': '폴 세잔(Paul Cézanne)',
+      'paul cézanne': '폴 세잔(Paul Cézanne)',
+      'paul cezanne': '폴 세잔(Paul Cézanne)',
+      'gauguin': '폴 고갱(Paul Gauguin)',
+      'paul gauguin': '폴 고갱(Paul Gauguin)',
+      'seurat': '조르주 쇠라(Georges Seurat)',
+      'georges seurat': '조르주 쇠라(Georges Seurat)',
+      
+      // 야수파
+      'matisse': '앙리 마티스(Henri Matisse)',
+      'henri matisse': '앙리 마티스(Henri Matisse)',
+      'derain': '앙드레 드랭(André Derain)',
+      'andré derain': '앙드레 드랭(André Derain)',
+      'andre derain': '앙드레 드랭(André Derain)',
+      'vlaminck': '모리스 드 블라맹크(Maurice de Vlaminck)',
+      'maurice de vlaminck': '모리스 드 블라맹크(Maurice de Vlaminck)',
+      
+      // 표현주의
+      'munch': '에드바르 뭉크(Edvard Munch)',
+      'edvard munch': '에드바르 뭉크(Edvard Munch)',
+      'kirchner': '에른스트 루트비히 키르히너(Ernst Ludwig Kirchner)',
+      'ernst ludwig kirchner': '에른스트 루트비히 키르히너(Ernst Ludwig Kirchner)',
+      'kokoschka': '오스카 코코슈카(Oskar Kokoschka)',
+      'oskar kokoschka': '오스카 코코슈카(Oskar Kokoschka)',
+      
+      // 입체주의
+      'picasso': '파블로 피카소(Pablo Picasso)',
+      'pablo picasso': '파블로 피카소(Pablo Picasso)',
+      
+      // 초현실주의
+      'magritte': '르네 마그리트(René Magritte)',
+      'rené magritte': '르네 마그리트(René Magritte)',
+      'rene magritte': '르네 마그리트(René Magritte)',
+      'miro': '호안 미로(Joan Miró)',
+      'miró': '호안 미로(Joan Miró)',
+      'joan miro': '호안 미로(Joan Miró)',
+      'joan miró': '호안 미로(Joan Miró)',
+      'chagall': '마르크 샤갈(Marc Chagall)',
+      'marc chagall': '마르크 샤갈(Marc Chagall)',
+      
+      // 팝아트 (워홀 제거)
+      'lichtenstein': '로이 리히텐슈타인(Roy Lichtenstein)',
+      'roy lichtenstein': '로이 리히텐슈타인(Roy Lichtenstein)',
+      'haring': '키스 해링(Keith Haring)',
+      'keith haring': '키스 해링(Keith Haring)',
+      'keith-haring': '키스 해링(Keith Haring)',
+      
+      // 동양화 - 한국
+      'korean-jingyeong': '진경산수화(Korean True-View Landscape)',
+      'korean_jingyeong': '진경산수화(Korean True-View Landscape)',
+      'jingyeong': '진경산수화(True-View Landscape)',
+      'true-view': '진경산수화(True-View Landscape)',
+      'true-view-landscape': '진경산수화(True-View Landscape)',
+      'korean-landscape': '진경산수화(Korean Landscape)',
+      
+      'korean-minhwa': '민화(Korean Folk Painting)',
+      'korean_minhwa': '민화(Korean Folk Painting)',
+      'minhwa': '민화(Folk Painting)',
+      'folk-painting': '민화(Folk Painting)',
+      'korean-folk': '민화(Korean Folk)',
+      
+      'korean-genre': '풍속도(Korean Genre Painting)',
+      'korean_genre': '풍속도(Korean Genre Painting)',
+      'genre-painting': '풍속도(Genre Painting)',
+      'korean-genre-painting': '풍속도(Korean Genre Painting)',
+      'pungsokdo': '풍속도(Pungsokdo)',
+      
+      // 동양화 - 중국
+      'chinese-ink': '수묵산수화(Chinese Ink Landscape)',
+      'chinese_ink': '수묵산수화(Chinese Ink Landscape)',
+      'ink-landscape': '수묵산수화(Ink Landscape)',
+      'ink-painting': '수묵산수화(Ink Painting)',
+      'shanshui': '수묵산수화(Shanshui)',
+      'chinese-landscape': '수묵산수화(Chinese Landscape)',
+      
+      'chinese-gongbi': '공필화(Chinese Gongbi)',
+      'chinese_gongbi': '공필화(Chinese Gongbi)',
+      'gongbi': '공필화(Gongbi)',
+      'gongbi-painting': '공필화(Gongbi Painting)',
+      
+      'chinese-huaniao': '화조화(Chinese Bird-and-Flower)',
+      'chinese_huaniao': '화조화(Chinese Bird-and-Flower)',
+      'huaniao': '화조화(Bird-and-Flower)',
+      'bird-and-flower': '화조화(Bird-and-Flower)',
+      'flower-and-bird': '화조화(Flower-and-Bird)',
+      
+      // 동양화 - 일본
+      'japanese-ukiyoe': '우키요에(Japanese Ukiyo-e)',
+      'japanese_ukiyoe': '우키요에(Japanese Ukiyo-e)',
+      'ukiyoe': '우키요에(Ukiyo-e)',
+      'ukiyo-e': '우키요에(Ukiyo-e)',
+      'japanese-woodblock': '우키요에(Japanese Woodblock)',
+      'woodblock-print': '우키요에(Woodblock Print)',
+      
+      // 한글 화가명도 매핑 (API가 한글로 반환하는 경우)
+      '마티스': '앙리 마티스(Henri Matisse)',
+      '피카소': '파블로 피카소(Pablo Picasso)',
+      '뭉크': '에드바르 뭉크(Edvard Munch)',
+      '반 고흐': '빈센트 반 고흐(Vincent van Gogh)',
+      '클림트': '구스타프 클림트(Gustav Klimt)',
+      '프리다': '프리다 칼로(Frida Kahlo)',
+      '프리다 칼로': '프리다 칼로(Frida Kahlo)'
+    };
+    
+    // 매핑에서 찾기
+    if (nameMap[normalized]) {
+      // console.log('🎨 formatArtistName found:', nameMap[normalized]);
+      return nameMap[normalized];
     }
     
-    // 동양화 스타일 검색
-    const oriental = findOrientalStyle(artistName);
-    if (oriental) {
-      return `${oriental.style.ko}(${oriental.style.en})`;
-    }
-    
-    // 거장 검색
-    const master = findMasterByNameOrWork(artistName, null);
-    if (master) {
-      return `${master.master.ko}(${master.master.en})`;
+    // 부분 매칭 시도 (대문자/공백 변형 대응)
+    for (const [key, value] of Object.entries(nameMap)) {
+      if (normalized.replace(/[\s-_]/g, '') === key.replace(/[\s-_]/g, '')) {
+        // console.log('🎨 formatArtistName partial match:', value);
+        return value;
+      }
     }
     
     // 매핑에 없으면 원본 반환
+    // console.log('🎨 formatArtistName NOT FOUND, returning original:', artistName);
     return artistName;
   };
 
 
-  // ========== 신고전 vs 낭만 vs 사실: 구체적 사조 매핑 (v68: masterData 사용) ==========
+  // ========== 신고전 vs 낭만 vs 사실: 구체적 사조 매핑 ==========
   const getSpecificMovement = (artistName) => {
-    const artist = findArtistByName(artistName);
-    if (!artist) return null;
+    const artist = artistName.toLowerCase();
     
-    const movementMap = {
-      'neoclassicism': { text: '신고전주의', color: 'neoclassical' },
-      'romanticism': { text: '낭만주의', color: 'romantic' },
-      'realism': { text: '사실주의', color: 'realist' }
-    };
+    // 신고전주의
+    const neoclassical = ['jacques-louis-david', 'david', 'ingres', 'jean-auguste-dominique ingres'];
     
-    return movementMap[artist.movementId] || null;
+    // 낭만주의
+    const romantic = ['turner', 'j.m.w. turner', 'william turner', 
+                      'friedrich', 'caspar david friedrich', 
+                      'delacroix', 'eugène delacroix', 'eugene delacroix'];
+    
+    // 사실주의
+    const realist = ['courbet', 'gustave courbet',
+                     'manet', 'édouard manet', 'edouard manet'];
+    
+    if (neoclassical.some(name => artist.includes(name))) {
+      return { text: '신고전주의', color: 'neoclassical' };
+    }
+    if (romantic.some(name => artist.includes(name))) {
+      return { text: '낭만주의', color: 'romantic' };
+    }
+    if (realist.some(name => artist.includes(name))) {
+      return { text: '사실주의', color: 'realist' };
+    }
+    
+    return null; // 매칭 안 되면 null
   };
 
-  // ========== 20세기 모더니즘: 세부 사조 매핑 (v68: masterData 사용) ==========
+  // ========== 20세기 모더니즘: 세부 사조 매핑 ==========
   const getModernismMovement = (artistName) => {
-    const artist = findArtistByName(artistName);
-    if (!artist?.sub) return null;
+    const artist = artistName.toLowerCase();
     
-    const subMap = {
-      'cubism': { text: '입체주의', color: 'cubism' },
-      'surrealism': { text: '초현실주의', color: 'surrealism' },
-      'popArt': { text: '팝아트', color: 'popart' }
-    };
+    // 입체주의 - v59: 브라크 제거 (피카소와 중복)
+    const cubism = ['picasso', 'pablo picasso'];
     
-    return subMap[artist.sub] || null;
+    // 초현실주의 - v59: 달리 완전 삭제
+    const surrealism = ['magritte', 'rené magritte', 'rene magritte',
+                        'miro', 'miró', 'joan miro', 'joan miró',
+                        'chagall', 'marc chagall'];
+    
+    // 팝아트 (워홀 제거)
+    const popart = ['lichtenstein', 'roy lichtenstein',
+                    'keith haring', 'keith-haring', 'haring'];
+    
+    if (cubism.some(name => artist.includes(name))) {
+      return { text: '입체주의', color: 'cubism' };
+    }
+    if (surrealism.some(name => artist.includes(name))) {
+      return { text: '초현실주의', color: 'surrealism' };
+    }
+    if (popart.some(name => artist.includes(name))) {
+      return { text: '팝아트', color: 'popart' };
+    }
+    
+    return null; // 매칭 안 되면 null
   };
 
 
@@ -1752,36 +2093,25 @@ const ResultScreen = ({
   };
 
 
-  // ========== 스와이프 핸들러 (원클릭 + 단독변환 통합) ==========
+  // ========== 스와이프 핸들러 (원클릭) ==========
   const handleTouchStart = (e) => {
+    if (!isFullTransform) return;
     setTouchStartX(e.touches[0].clientX);
     setTouchStartY(e.touches[0].clientY);
   };
 
   const handleTouchEnd = (e) => {
-    if (!touchStartX) return;
+    if (!isFullTransform || !touchStartX) return;
     const diffX = touchStartX - e.changedTouches[0].clientX;
     const diffY = touchStartY - e.changedTouches[0].clientY;
     
     // 수평 스와이프만 인식 (X축 이동이 Y축보다 커야 함)
     if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
-      if (isFullTransform) {
-        // 원클릭: 총 개수 = 원본(1) + 결과(safeResults.length)
-        const totalCount = safeResults.length + 1;
-        if (diffX > 0 && currentIndex < totalCount - 1) {
-          setCurrentIndex(i => i + 1);  // 왼쪽 스와이프 → 다음
-        }
-        if (diffX < 0 && currentIndex > 0) {
-          setCurrentIndex(i => i - 1);  // 오른쪽 스와이프 → 이전
-        }
-      } else {
-        // 단독변환: 0번 원본, 1번 결과
-        if (diffX > 0 && singleIndex < 1) {
-          setSingleIndex(1);  // 왼쪽 스와이프 → 결과
-        }
-        if (diffX < 0 && singleIndex > 0) {
-          setSingleIndex(0);  // 오른쪽 스와이프 → 원본
-        }
+      if (diffX > 0 && currentIndex < results.length - 1) {
+        setCurrentIndex(i => i + 1);  // 왼쪽 스와이프 → 다음
+      }
+      if (diffX < 0 && currentIndex > 0) {
+        setCurrentIndex(i => i - 1);  // 오른쪽 스와이프 → 이전
       }
     }
     setTouchStartX(0);
@@ -1797,42 +2127,37 @@ const ResultScreen = ({
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
+        
+        {/* Header */}
+        <div className="result-header">
+          <h1>✨ 완성!</h1>
+          <p className="result-subtitle">
+            {isFullTransform 
+              ? `${selectedStyle.name} (${currentIndex + 1}/${fullTransformResults.length})`
+              : `${selectedStyle.name} 스타일로 변환되었습니다`
+            }
+          </p>
+        </div>
 
-        {/* 원클릭: 0번은 원본, 1~N번은 결과 (재변환 결과 반영) */}
+        {/* 원클릭: 이미지만 표시 (재변환 결과 반영) */}
         {isFullTransform && (
           <div className="result-image-wrapper">
-            {isOriginalView ? (
-              // 0번: 원본 이미지
-              <img src={URL.createObjectURL(originalPhoto)} alt="원본 사진" className="result-image" />
-            ) : (
-              // 1~N번: 변환 결과 (재변환 결과 우선)
-              <img src={currentMasterResultImage || displayImage} alt="변환 결과" className="result-image" />
-            )}
+            <img src={currentMasterResultImage || displayImage} alt="변환 결과" className="result-image" />
           </div>
         )}
 
-        {/* 단일 변환: v67.3 - 원클릭과 동일 구조 (0번 원본, 1번 결과) */}
-        {!isFullTransform && (
-          <div className="result-image-wrapper">
-            {singleIndex === 0 ? (
-              // 0번: 원본 이미지
-              <img src={URL.createObjectURL(originalPhoto)} alt="원본 사진" className="result-image" />
-            ) : (
-              // 1번: 변환 결과
-              finalDisplayImage ? (
-                <img src={finalDisplayImage} alt="변환 결과" className="result-image" />
-              ) : (
-                // 변환 실패 시 placeholder
-                <div className="result-image-placeholder">
-                  <p>🎨 변환 결과가 없습니다</p>
-                </div>
-              )
-            )}
+        {/* 단일 변환: Before/After Slider (v68: 재변환 결과 반영) */}
+        {!isFullTransform && finalDisplayImage && (
+          <div className="comparison-wrapper">
+            <BeforeAfter 
+              beforeImage={URL.createObjectURL(originalPhoto)}
+              afterImage={finalDisplayImage}
+            />
           </div>
         )}
 
-        {/* 단독변환 실패 시 다시 시도 버튼 (1번 결과 화면에서만) */}
-        {!isFullTransform && singleIndex === 1 && (!finalDisplayImage || isRetrying) && (
+        {/* 단독변환 실패 시 다시 시도 버튼 */}
+        {!isFullTransform && (!finalDisplayImage || isRetrying) && (
           <div className="retry-section">
             {isRetrying ? (
               <div className="retry-in-progress">
@@ -1867,302 +2192,132 @@ const ResultScreen = ({
 
         {/* Education Card */}
         {showInfo && (
-          <>
-            {/* v67.3: 원클릭/단독변환 0번 = 1차 교육 */}
-            {isOriginalView && (isFullTransform ? getPrimaryEducation() : getSinglePrimaryEducation()) ? (
-              <div className="technique-card primary-education">
-                <div className="card-header">
-                  <div className="technique-icon">{selectedStyle?.icon || '🎨'}</div>
-                  <div>
-                    <h2>
-                      {isFullTransform 
-                        ? (getPrimaryEducation().ui?.title || selectedStyle.name)
-                        : (getSinglePrimaryEducation().title || selectedStyle.name)
-                      }
-                    </h2>
-                    {/* v68: 원클릭 0번은 부제 제거, 단독변환 0번은 부제 표시 */}
-                    {!isFullTransform && (
-                      <p className="technique-subtitle">
-                        <span className="artist-name">
-                          {(() => {
-                            const category = selectedStyle?.category;
-                            if (category === 'masters') {
-                              // 거장: 화파·국가
-                              const styleId = selectedStyle?.id || selectedStyle?.style;
-                              const masterId = styleId?.replace('-master', '') || '';
-                              if (masterId && mastersBasicInfo[masterId]?.loading?.subtitle) {
-                                return mastersBasicInfo[masterId].loading.subtitle;
-                              }
-                              return '';
-                            } else if (category === 'movements') {
-                              // 사조: 대표 화가들 (movementsBasicInfo에서)
-                              const styleKey = selectedStyle?.style || selectedStyle?.id;
-                              if (styleKey && movementsBasicInfo[styleKey]?.loading?.subtitle) {
-                                return movementsBasicInfo[styleKey].loading.subtitle;
-                              }
-                              return '';
-                            } else if (category === 'oriental') {
-                              // 동양화: 스타일들 (orientalBasicInfo에서)
-                              const styleKey = selectedStyle?.style || selectedStyle?.id;
-                              if (styleKey && orientalBasicInfo[styleKey]?.loading?.subtitle) {
-                                return orientalBasicInfo[styleKey].loading.subtitle;
-                              }
-                              return '';
-                            }
-                            return '';
-                          })()}
-                        </span>
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="card-content">
-                  <div className="technique-explanation">
-                    {/* v68: 줄바꿈 처리 */}
-                    {(() => {
-                      const content = isFullTransform 
-                        ? getPrimaryEducation().ui?.content
-                        : getSinglePrimaryEducation().content;
-                      
-                      if (!content) return null;
-                      
-                      return content.split('\n\n').map((paragraph, index) => (
-                        paragraph.trim() && (
-                          <p key={index}>
-                            {paragraph.trim().split('\n').map((line, lineIndex) => (
-                              <React.Fragment key={lineIndex}>
-                                {line}
-                                {lineIndex < paragraph.trim().split('\n').length - 1 && <br />}
-                              </React.Fragment>
-                            ))}
-                          </p>
-                        )
-                      ));
-                    })()}
-                    {/* v68: 자세히 보기 버튼 제거 - 제목이 시적 첫 줄이 되어 전체 내용이 카드에 표시됨 */}
-                  </div>
-                </div>
+          <div className="technique-card">
+            
+            {/* Card Header */}
+            <div className="card-header">
+              <div className="technique-icon">
+                {isFullTransform ? (currentResult?.style?.icon || '🎨') : (selectedStyle.icon || '🎨')}
               </div>
-            ) : (
-              /* v67.3: 원클릭 1~N번 또는 단독변환 1번 = 2차 교육 */
-              <div className="technique-card">
-                
-                {/* Card Header */}
-                <div className="card-header">
-                  <div className="technique-icon">
-                    {/* v68: 모든 카테고리 selectedStyle.icon 통일 */}
-                    {selectedStyle?.icon || '🎨'}
-                  </div>
-                  <div>
-                    <h2>
-                      {/* v67: 새 표기 형식 - 제목 */}
-                      {/* 거장: 풀네임(영문, 생몰연도) */}
-                      {/* 미술사조: 사조(영문, 시기) */}
-                      {/* 동양화: 국가 전통회화 */}
-                      {(() => {
-                        const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
-                        const styleName = isFullTransform ? (currentResult?.style?.name || selectedStyle.name) : selectedStyle.name;
-                        
-                        if (category === 'masters') {
-                          // API 실패 시 selectedStyle.name 사용
-                          const artistForDisplay = displayArtist || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
-                          const masterInfo = getMasterInfo(artistForDisplay);
-                          return masterInfo.fullName;
-                        } else if (category === 'movements') {
-                          const movementInfo = getMovementDisplayInfo(styleName, displayArtist);
-                          return movementInfo.title;
-                        } else if (category === 'oriental') {
-                          const orientalInfo = getOrientalDisplayInfo(displayArtist);
-                          return orientalInfo.title;
-                        }
-                        return styleName;
-                      })()}
-                    </h2>
-                    <p className="technique-subtitle">
-                      <span className="artist-name">
-                        {/* v67: 새 표기 형식 - 부제 */}
-                        {/* 거장: 사조(시기) */}
-                        {/* 미술사조: 화가명(생몰연도) */}
-                        {/* 동양화: 스타일(영문) */}
-                        {(() => {
-                          const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
-                          const styleName = isFullTransform ? (currentResult?.style?.name || selectedStyle.name) : selectedStyle.name;
-                          
-                          // v68: 단독변환에서 aiSelectedArtist 직접 사용
-                          const artistForSubtitle = isFullTransform 
-                            ? displayArtist 
-                            : (aiSelectedArtist || displayArtist);
-                          
-                          console.log('🎨 [결과 부제]', { category, styleName, artistForSubtitle, aiSelectedArtist, displayArtist, isFullTransform });
-                          
-                          if (category === 'masters') {
-                            const artistForDisplay = artistForSubtitle || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
-                            // masterId 추출: 'vangogh', 'klimt' 등
-                            const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
-                            let masterId = styleId?.replace('-master', '') || '';
-                            
-                            // styleId가 없으면 artistForDisplay에서 추출
-                            if (!masterId && artistForDisplay) {
-                              const normalized = artistForDisplay.toLowerCase().trim();
-                              const artistToMasterId = {
-                                '반 고흐': 'vangogh', '빈센트 반 고흐': 'vangogh', 'van gogh': 'vangogh', 'vangogh': 'vangogh',
-                                '클림트': 'klimt', '구스타프 클림트': 'klimt', 'klimt': 'klimt', 'gustav klimt': 'klimt',
-                                '뭉크': 'munch', '에드바르 뭉크': 'munch', 'munch': 'munch', 'edvard munch': 'munch',
-                                '마티스': 'matisse', '앙리 마티스': 'matisse', 'matisse': 'matisse', 'henri matisse': 'matisse',
-                                '샤갈': 'chagall', '마르크 샤갈': 'chagall', 'chagall': 'chagall', 'marc chagall': 'chagall',
-                                '피카소': 'picasso', '파블로 피카소': 'picasso', 'picasso': 'picasso', 'pablo picasso': 'picasso',
-                                '프리다': 'frida', '프리다 칼로': 'frida', 'frida': 'frida', 'frida kahlo': 'frida',
-                                '리히텐슈타인': 'lichtenstein', '로이 리히텐슈타인': 'lichtenstein', 'lichtenstein': 'lichtenstein', 'roy lichtenstein': 'lichtenstein'
-                              };
-                              masterId = artistToMasterId[artistForDisplay] || artistToMasterId[normalized] || '';
-                            }
-                            
-                            // v68: 원클릭 = 대표작, 단독변환 = 대표작 (둘 다 대표작!)
-                            if (masterId && mastersBasicInfo[masterId]?.result?.subtitle) {
-                              return mastersBasicInfo[masterId].result.subtitle;
-                            }
-                            // fallback: 기존 movement
-                            const masterInfo = getMasterInfo(artistForDisplay);
-                            return masterInfo.movement || '거장';
-                          } else if (category === 'movements') {
-                            const movementInfo = getMovementDisplayInfo(styleName, artistForSubtitle);
-                            return movementInfo.subtitle;
-                          } else if (category === 'oriental') {
-                            const orientalInfo = getOrientalDisplayInfo(artistForSubtitle);
-                            return orientalInfo.subtitle;
-                          }
-                          return formatArtistName(artistForSubtitle);
-                        })()}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-
-                {/* Card Content - v68: 거장도 교육자료 표시 */}
-                {(() => {
-                  const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
-                  // v68: 거장도 교육자료(화풍 설명) 표시
-                  
-                  return (
-                <div className="card-content">
+              <div>
+                <h2>
+                  {/* v67: 새 표기 형식 - 제목 */}
+                  {/* 거장: 풀네임(영문, 생몰연도) */}
+                  {/* 미술사조: 사조(영문, 시기) */}
+                  {/* 동양화: 국가 전통회화 */}
                   {(() => {
-                    // console.log('');
-                    // console.log('🖼️ RENDERING EDUCATION CONTENT:');
-                    // console.log('   - isLoadingEducation:', isLoadingEducation);
-                    // console.log('   - educationText:', educationText);
-                    // console.log('   - educationText length:', educationText?.length);
-                    // console.log('');
-                    return null;
+                    const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
+                    const styleName = isFullTransform ? (currentResult?.style?.name || selectedStyle.name) : selectedStyle.name;
+                    
+                    if (category === 'masters') {
+                      // API 실패 시 selectedStyle.name 사용
+                      const artistForDisplay = displayArtist || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
+                      const masterInfo = getMasterInfo(artistForDisplay);
+                      return masterInfo.fullName;
+                    } else if (category === 'movements') {
+                      const movementInfo = getMovementDisplayInfo(styleName, displayArtist);
+                      return movementInfo.title;
+                    } else if (category === 'oriental') {
+                      const orientalInfo = getOrientalDisplayInfo(displayArtist);
+                      return orientalInfo.title;
+                    }
+                    return styleName;
                   })()}
-                  {isLoadingEducation ? (
-                    <div className="loading-education">
-                      <div className="spinner"></div>
-                      <p>작품 설명을 생성하고 있습니다...</p>
-                    </div>
-                  ) : (
-                    <div className="technique-explanation">
-                      {(typeof educationText === 'string' ? educationText : '').split('\n\n').map((paragraph, index) => (
-                        paragraph.trim() && (
-                          <p key={index}>
-                            {paragraph.trim().split('\n').map((line, lineIndex) => (
-                              <React.Fragment key={lineIndex}>
-                                {line}
-                                {lineIndex < paragraph.trim().split('\n').length - 1 && <br />}
-                              </React.Fragment>
-                            ))}
-                          </p>
-                        )
-                      ))}
-                      {/* v68: 자세히 보기 버튼 제거 (결과에서는 불필요) */}
-                    </div>
-                  )}
-                </div>
-                  );
-                })()}
-                
+                </h2>
+                <p className="technique-subtitle">
+                  <span className="artist-name">
+                    {/* v67: 새 표기 형식 - 부제 */}
+                    {/* 거장: 사조(시기) */}
+                    {/* 미술사조: 화가명(생몰연도) */}
+                    {/* 동양화: 스타일(영문) */}
+                    {(() => {
+                      const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
+                      const styleName = isFullTransform ? (currentResult?.style?.name || selectedStyle.name) : selectedStyle.name;
+                      
+                      if (category === 'masters') {
+                        // API 실패 시 selectedStyle.name 사용
+                        const artistForDisplay = displayArtist || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
+                        const masterInfo = getMasterInfo(artistForDisplay);
+                        return masterInfo.movement || '거장';
+                      } else if (category === 'movements') {
+                        const movementInfo = getMovementDisplayInfo(styleName, displayArtist);
+                        return movementInfo.subtitle;
+                      } else if (category === 'oriental') {
+                        const orientalInfo = getOrientalDisplayInfo(displayArtist);
+                        return orientalInfo.subtitle;
+                      }
+                      return formatArtistName(displayArtist);
+                    })()}
+                  </span>
+                </p>
               </div>
-            )}
-          </>
+            </div>
+
+            {/* Card Content */}
+            <div className="card-content">
+              {(() => {
+                // console.log('');
+                // console.log('🖼️ RENDERING EDUCATION CONTENT:');
+                // console.log('   - isLoadingEducation:', isLoadingEducation);
+                // console.log('   - educationText:', educationText);
+                // console.log('   - educationText length:', educationText?.length);
+                // console.log('');
+                return null;
+              })()}
+              {isLoadingEducation ? (
+                <div className="loading-education">
+                  <div className="spinner"></div>
+                  <p>작품 설명을 생성하고 있습니다...</p>
+                </div>
+              ) : (
+                <div className="technique-explanation">
+                  <h3>🖌️ 적용된 예술 기법</h3>
+                  {educationText.split('\n\n').map((paragraph, index) => (
+                    paragraph.trim() && (
+                      <p key={index}>
+                        {paragraph.trim().split('\n').map((line, lineIndex) => (
+                          <React.Fragment key={lineIndex}>
+                            {line}
+                            {lineIndex < paragraph.trim().split('\n').length - 1 && <br />}
+                          </React.Fragment>
+                        ))}
+                      </p>
+                    )
+                  ))}
+                </div>
+              )}
+            </div>
+            
+          </div>
         )}
 
-        {/* v68: 거장(AI) 대화 섹션 - 네비게이션 위로 이동, 원본에서는 숨김 */}
-        {displayCategory === 'masters' && currentMasterKey && !isOriginalView && (
-          <MasterChat
-            key={currentMasterKey}
-            masterKey={currentMasterKey}
-            onRetransform={(correctionPrompt) => handleMasterRetransform(correctionPrompt, currentMasterKey)}
-            isRetransforming={isCurrentMasterWorking}
-            retransformCost={100}
-            savedChatData={masterChatData[currentMasterKey]}
-            onChatDataChange={(data) => updateMasterChatData(currentMasterKey, data)}
-          />
-        )}
-
-        {/* 원클릭 네비게이션 (교육자료 하단) - v67.2: 0번 원본 추가 */}
+        {/* 원클릭 네비게이션 (교육자료 하단) */}
         {isFullTransform && (
           <div className="fullTransform-nav">
             <button 
               onClick={() => setCurrentIndex(i => Math.max(0, i - 1))}
-              disabled={currentIndex === 0}
+              disabled={currentIndex === 0 || isRetrying}
               className="nav-btn"
+              style={{ opacity: isRetrying ? 0.5 : 1 }}
             >
               ◀ 이전
             </button>
             <div className="nav-dots">
-              {/* 0번 원본 점 */}
-              <button
-                key="original"
-                className={`nav-dot ${currentIndex === 0 ? 'active' : ''}`}
-                onClick={() => setCurrentIndex(0)}
-                title="원본"
-              />
-              {/* 1~N번 결과 점 */}
               {fullTransformResults.map((_, idx) => (
                 <button
                   key={idx}
-                  className={`nav-dot ${idx + 1 === currentIndex ? 'active' : ''}`}
-                  onClick={() => setCurrentIndex(idx + 1)}
+                  className={`nav-dot ${idx === currentIndex ? 'active' : ''}`}
+                  onClick={() => !isRetrying && setCurrentIndex(idx)}
+                  disabled={isRetrying}
+                  style={{ opacity: isRetrying ? 0.5 : 1 }}
                 />
               ))}
             </div>
             <button 
-              onClick={() => setCurrentIndex(i => Math.min(fullTransformResults.length, i + 1))}
-              disabled={currentIndex === fullTransformResults.length}
+              onClick={() => setCurrentIndex(i => Math.min(fullTransformResults.length - 1, i + 1))}
+              disabled={currentIndex === fullTransformResults.length - 1 || isRetrying}
               className="nav-btn"
-            >
-              다음 ▶
-            </button>
-          </div>
-        )}
-
-        {/* 단독변환 네비게이션 (교육자료 하단) - v68: 원클릭과 동일 위치 */}
-        {!isFullTransform && (
-          <div className="fullTransform-nav">
-            <button 
-              onClick={() => setSingleIndex(0)}
-              disabled={singleIndex === 0}
-              className="nav-btn"
-            >
-              ◀ 이전
-            </button>
-            <div className="nav-dots">
-              {/* 0번 원본 점 */}
-              <button
-                className={`nav-dot ${singleIndex === 0 ? 'active' : ''}`}
-                onClick={() => setSingleIndex(0)}
-                title="원본"
-              />
-              {/* 1번 결과 점 */}
-              <button
-                className={`nav-dot ${singleIndex === 1 ? 'active' : ''}`}
-                onClick={() => setSingleIndex(1)}
-                disabled={!finalDisplayImage}
-              />
-            </div>
-            <button 
-              onClick={() => setSingleIndex(1)}
-              disabled={singleIndex === 1 || !finalDisplayImage}
-              className="nav-btn"
+              style={{ opacity: isRetrying ? 0.5 : 1 }}
             >
               다음 ▶
             </button>
@@ -2191,6 +2346,19 @@ const ResultScreen = ({
               </div>
             )}
           </div>
+        )}
+
+        {/* 거장(AI) 대화 섹션 - 거장 카테고리일 때만 표시 (v68) */}
+        {displayCategory === 'masters' && currentMasterKey && (
+          <MasterChat
+            key={currentMasterKey}
+            masterKey={currentMasterKey}
+            onRetransform={(correctionPrompt) => handleMasterRetransform(correctionPrompt, currentMasterKey)}
+            isRetransforming={isCurrentMasterWorking}
+            retransformCost={100}
+            savedChatData={masterChatData[currentMasterKey]}
+            onChatDataChange={(data) => updateMasterChatData(currentMasterKey, data)}
+          />
         )}
 
         {/* Action Buttons */}
@@ -2319,11 +2487,6 @@ const ResultScreen = ({
           margin-bottom: 1.5rem;
         }
 
-        /* v68: 원클릭 0번 (부제 없음) - 세로 가운데, 가로 왼쪽 */
-        .primary-education .card-header {
-          align-items: center;
-        }
-
         .technique-icon {
           font-size: 3.5rem;
           min-width: 3.5rem;
@@ -2449,40 +2612,6 @@ const ResultScreen = ({
         
         .technique-explanation p:last-child {
           margin-bottom: 0;
-        }
-
-        /* v67.2: 자세히 보기 버튼 */
-        .more-btn {
-          display: block;
-          width: 100%;
-          margin-top: 1rem;
-          padding: 0.75rem 1rem;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          border: none;
-          border-radius: 8px;
-          font-size: 0.95rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s;
-        }
-        
-        .more-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-        
-        .more-btn:active {
-          transform: translateY(0);
-        }
-
-        /* v67.2: 1차 교육 카드 스타일 */
-        .primary-education {
-          border: 2px solid #667eea;
-        }
-        
-        .primary-education .technique-explanation {
-          background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%);
         }
 
         .action-buttons {
@@ -2709,58 +2838,6 @@ const ResultScreen = ({
         .result-image {
           width: 100%;
           display: block;
-        }
-        .result-image-placeholder {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-height: 200px;
-          background: #f5f5f5;
-          color: #999;
-          font-size: 16px;
-        }
-
-        /* v67.3: 단독변환 점 네비게이션 */
-        .dots-container.single-mode {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          margin-bottom: 16px;
-        }
-        .dots-container .dot {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          border: none;
-          background: #ddd;
-          cursor: pointer;
-          padding: 0;
-          font-size: 0;
-          transition: all 0.2s;
-        }
-        .dots-container .dot.active {
-          background: #667eea;
-          transform: scale(1.3);
-        }
-        .dots-container .dot.original {
-          width: auto;
-          height: auto;
-          background: transparent;
-          font-size: 16px;
-          padding: 4px;
-        }
-        .dots-container .dot.original.active {
-          transform: scale(1.2);
-        }
-        .dots-container .dot:disabled {
-          background: #eee;
-          cursor: not-allowed;
-        }
-        .dots-container .count {
-          font-size: 12px;
-          color: #999;
-          margin-left: 4px;
         }
       `}</style>
     </div>
