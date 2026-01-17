@@ -1000,7 +1000,24 @@ export const getOrientalDisplayInfo = (artistName) => {
   
   // ORIENTAL에서 검색
   for (const [countryId, country] of Object.entries(ORIENTAL)) {
-    // 스타일 매칭
+    // 1. 국가 매칭 (예: "한국 전통화", "Korean", "중국 전통회화")
+    if (country.ko === artistName || 
+        country.en?.toLowerCase() === normalized ||
+        artistName.includes(country.ko?.replace(' 전통회화', '')) ||
+        artistName.includes('한국') && countryId === 'korean' ||
+        artistName.includes('중국') && countryId === 'chinese' ||
+        artistName.includes('일본') && countryId === 'japanese') {
+      // 국가 매칭 시: 국가명(영문) + 스타일 목록
+      const styleList = country.styles 
+        ? Object.values(country.styles).map(s => s.ko).join(' · ')
+        : '';
+      return {
+        title: `${country.ko}(${country.en})`,
+        subtitle: styleList
+      };
+    }
+    
+    // 2. 스타일 매칭 (예: "민화", "Minhwa")
     if (country.styles) {
       for (const [styleId, style] of Object.entries(country.styles)) {
         if (styleId === normalized || 

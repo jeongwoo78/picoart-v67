@@ -80,17 +80,20 @@ const ResultScreen = ({
   
   // fullTransformResults가 변경되면 results도 업데이트
   useEffect(() => {
-    if (fullTransformResults) {
+    if (fullTransformResults && Array.isArray(fullTransformResults)) {
       setResults(fullTransformResults);
     }
   }, [fullTransformResults]);
   
+  // 안전한 results 배열 (항상 배열 보장)
+  const safeResults = Array.isArray(results) ? results : [];
+  
   // 실패한 결과 개수
-  const failedCount = results.filter(r => !r.success).length;
+  const failedCount = safeResults.filter(r => !r.success).length;
   
   // 현재 보여줄 결과 - v67.2: 0번은 원본, 1~N번이 결과
-  // currentIndex 0 = 원본, currentIndex 1 = results[0], currentIndex 2 = results[1], ...
-  const currentResult = isFullTransform && currentIndex > 0 ? results[currentIndex - 1] : null;
+  // currentIndex 0 = 원본, currentIndex 1 = safeResults[0], currentIndex 2 = safeResults[1], ...
+  const currentResult = isFullTransform && currentIndex > 0 ? safeResults[currentIndex - 1] : null;
   // 단독변환: 재시도 성공 시 singleRetryResult 사용
   const [singleRetryResultState, setSingleRetryResultState] = useState(null);
   const displayImage = isFullTransform 
@@ -329,18 +332,18 @@ const ResultScreen = ({
   const handleRetry = async () => {
     if (!originalPhoto || isRetrying) return;
     
-    const failedResults = results.filter(r => !r.success);
+    const failedResults = safeResults.filter(r => !r.success);
     if (failedResults.length === 0) return;
     
     setIsRetrying(true);
     // console.log(`🔄 다시 시도 시작: ${failedResults.length}개 실패한 변환`);
     
     let successCount = 0;
-    let updatedResults = [...results];  // 업데이트된 결과 추적용
+    let updatedResults = [...safeResults];  // 업데이트된 결과 추적용
     
     for (let i = 0; i < failedResults.length; i++) {
       const failed = failedResults[i];
-      const failedIndex = results.findIndex(r => r.style?.id === failed.style?.id);
+      const failedIndex = safeResults.findIndex(r => r.style?.id === failed.style?.id);
       
       setRetryProgress('다시 시도 중...');
       
@@ -460,7 +463,7 @@ const ResultScreen = ({
   useEffect(() => {
     // console.log('🎨 ResultScreen mounted or aiSelectedArtist changed');
     generate2ndEducation();
-  }, [aiSelectedArtist, currentIndex, currentResult?.aiSelectedArtist, currentResult?.selected_work]);
+  }, [aiSelectedArtist, currentIndex, currentResult?.aiSelectedArtist, currentResult?.selected_work, safeResults.length]);
 
   // 원클릭: 화면 이동 시 현재 결과 로그
   useEffect(() => {
@@ -474,7 +477,7 @@ const ResultScreen = ({
       const work = currentResult.selected_work;
       
       console.log('');
-      console.log(`📍 [${currentIndex + 1}/${results.length}] ─────────────────────`);
+      console.log(`📍 [${currentIndex + 1}/${safeResults.length}] ─────────────────────`);
       
       if (category === 'masters') {
         const masterInfo = getMasterInfo(artist);
@@ -503,7 +506,7 @@ const ResultScreen = ({
         console.log(`   ❌ 에러: ${currentResult.error}`);
       }
     }
-  }, [currentIndex, isFullTransform, currentResult, results.length]);
+  }, [currentIndex, isFullTransform, currentResult, safeResults.length]);
 
 
   // ========== 원클릭용 키 매칭 (v51: educationMatcher.js 사용) ==========
@@ -607,6 +610,13 @@ const ResultScreen = ({
     
     // ========== 원클릭: 새로운 매칭 로직 사용 ==========
     if (isFullTransform) {
+      // v70: 원클릭 모드에서 결과가 아직 로드되지 않았으면 스킵
+      if (!currentResult && currentIndex > 0) {
+        console.log('⏳ 원클릭: 결과 로딩 대기 중...');
+        setIsLoadingEducation(false);
+        return;
+      }
+      
       // console.log('📜 ONECLICK MODE - using educationMatcher.js');
       
       // currentResult에서 정보 추출
@@ -1756,8 +1766,8 @@ const ResultScreen = ({
     // 수평 스와이프만 인식 (X축 이동이 Y축보다 커야 함)
     if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
       if (isFullTransform) {
-        // 원클릭: 총 개수 = 원본(1) + 결과(results.length)
-        const totalCount = results.length + 1;
+        // 원클릭: 총 개수 = 원본(1) + 결과(safeResults.length)
+        const totalCount = safeResults.length + 1;
         if (diffX > 0 && currentIndex < totalCount - 1) {
           setCurrentIndex(i => i + 1);  // 왼쪽 스와이프 → 다음
         }
@@ -2051,7 +2061,7 @@ const ResultScreen = ({
                     </div>
                   ) : (
                     <div className="technique-explanation">
-                      {educationText.split('\n\n').map((paragraph, index) => (
+                      {(typeof educationText === 'string' ? educationText : '').split('\n\n').map((paragraph, index) => (
                         paragraph.trim() && (
                           <p key={index}>
                             {paragraph.trim().split('\n').map((line, lineIndex) => (
