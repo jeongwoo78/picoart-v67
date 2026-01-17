@@ -2430,11 +2430,7 @@ const ResultScreen = ({
                         : (getSinglePrimaryEducation().title || selectedStyle.name)
                       }
                     </h2>
-                    <p className="technique-subtitle">
-                      <span className="artist-name">
-                        {isFullTransform ? '원클릭 변환 안내' : '스타일 변환 안내'}
-                      </span>
-                    </p>
+                    {/* v68: 부제 제거 */}
                   </div>
                 </div>
                 <div className="card-content">
@@ -2517,17 +2513,18 @@ const ResultScreen = ({
                             
                             // styleId가 없으면 artistForDisplay에서 추출
                             if (!masterId && artistForDisplay) {
+                              const normalized = artistForDisplay.toLowerCase().trim();
                               const artistToMasterId = {
-                                '반 고흐': 'vangogh', '빈센트 반 고흐': 'vangogh', 'Van Gogh': 'vangogh',
-                                '클림트': 'klimt', '구스타프 클림트': 'klimt', 'Klimt': 'klimt',
-                                '뭉크': 'munch', '에드바르 뭉크': 'munch', 'Munch': 'munch',
-                                '마티스': 'matisse', '앙리 마티스': 'matisse', 'Matisse': 'matisse',
-                                '샤갈': 'chagall', '마르크 샤갈': 'chagall', 'Chagall': 'chagall',
-                                '피카소': 'picasso', '파블로 피카소': 'picasso', 'Picasso': 'picasso',
-                                '프리다': 'frida', '프리다 칼로': 'frida', 'Frida': 'frida', 'Frida Kahlo': 'frida',
-                                '리히텐슈타인': 'lichtenstein', '로이 리히텐슈타인': 'lichtenstein', 'Lichtenstein': 'lichtenstein'
+                                '반 고흐': 'vangogh', '빈센트 반 고흐': 'vangogh', 'van gogh': 'vangogh', 'vangogh': 'vangogh',
+                                '클림트': 'klimt', '구스타프 클림트': 'klimt', 'klimt': 'klimt', 'gustav klimt': 'klimt',
+                                '뭉크': 'munch', '에드바르 뭉크': 'munch', 'munch': 'munch', 'edvard munch': 'munch',
+                                '마티스': 'matisse', '앙리 마티스': 'matisse', 'matisse': 'matisse', 'henri matisse': 'matisse',
+                                '샤갈': 'chagall', '마르크 샤갈': 'chagall', 'chagall': 'chagall', 'marc chagall': 'chagall',
+                                '피카소': 'picasso', '파블로 피카소': 'picasso', 'picasso': 'picasso', 'pablo picasso': 'picasso',
+                                '프리다': 'frida', '프리다 칼로': 'frida', 'frida': 'frida', 'frida kahlo': 'frida',
+                                '리히텐슈타인': 'lichtenstein', '로이 리히텐슈타인': 'lichtenstein', 'lichtenstein': 'lichtenstein', 'roy lichtenstein': 'lichtenstein'
                               };
-                              masterId = artistToMasterId[artistForDisplay] || '';
+                              masterId = artistToMasterId[artistForDisplay] || artistToMasterId[normalized] || '';
                             }
                             
                             // mastersBasicInfo에서 result.subtitle (대표작) 가져오기

@@ -797,8 +797,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
   };
 
   // 카테고리별 부제 포맷 (v67: 새 표기 형식)
-  // 거장: 사조(시기)
-  // 미술사조: 화가명(생몰연도)
+  // 거장: 사조 · 국가 (로딩용)
+  // 미술사조: 화가명
   // 동양화: 스타일(영문)
   const getSubtitle = (result) => {
     const cat = result?.style?.category;
@@ -806,6 +806,22 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
     const styleName = result?.style?.name;
     
     if (cat === 'masters') {
+      // v68: mastersBasicInfo에서 loading.subtitle 사용
+      const artistToMasterId = {
+        '반 고흐': 'vangogh', '빈센트 반 고흐': 'vangogh', 'Van Gogh': 'vangogh',
+        '클림트': 'klimt', '구스타프 클림트': 'klimt', 'Klimt': 'klimt',
+        '뭉크': 'munch', '에드바르 뭉크': 'munch', 'Munch': 'munch',
+        '마티스': 'matisse', '앙리 마티스': 'matisse', 'Matisse': 'matisse',
+        '샤갈': 'chagall', '마르크 샤갈': 'chagall', 'Chagall': 'chagall',
+        '피카소': 'picasso', '파블로 피카소': 'picasso', 'Picasso': 'picasso',
+        '프리다': 'frida', '프리다 칼로': 'frida', 'Frida': 'frida', 'Frida Kahlo': 'frida',
+        '리히텐슈타인': 'lichtenstein', '로이 리히텐슈타인': 'lichtenstein', 'Lichtenstein': 'lichtenstein'
+      };
+      const masterId = artistToMasterId[artist] || '';
+      if (masterId && mastersBasicInfo[masterId]?.loading?.subtitle) {
+        return mastersBasicInfo[masterId].loading.subtitle;
+      }
+      // fallback
       const masterInfo = getMasterInfo(artist);
       return masterInfo.movement || '거장';
     } else if (cat === 'movements') {
