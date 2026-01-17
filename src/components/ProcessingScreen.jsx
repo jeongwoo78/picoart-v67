@@ -1060,9 +1060,12 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
                   if (cat === 'movements' && styleId && movementsBasicInfo[styleId]) {
                     return movementsBasicInfo[styleId].loading.name;
                   }
-                  // 거장: mastersBasicInfo 사용
-                  if (cat === 'masters' && styleId && mastersBasicInfo[styleId]) {
-                    return mastersBasicInfo[styleId].loading.name;
+                  // 거장: mastersBasicInfo 사용 (masterId 추출)
+                  if (cat === 'masters' && styleId) {
+                    const masterId = styleId.replace('-master', ''); // 'vangogh-master' → 'vangogh'
+                    if (mastersBasicInfo[masterId]) {
+                      return mastersBasicInfo[masterId].loading.name;
+                    }
                   }
                   // 동양화: orientalBasicInfo 사용 (국가 ID 추출)
                   if (cat === 'oriental' && styleId) {
@@ -1084,8 +1087,11 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
                     return movementsBasicInfo[styleId].loading.subtitle;
                   }
                   // 거장: 사조 · 국가 (후기인상주의 · 네덜란드)
-                  if (cat === 'masters' && styleId && mastersBasicInfo[styleId]) {
-                    return mastersBasicInfo[styleId].loading.subtitle;
+                  if (cat === 'masters' && styleId) {
+                    const masterId = styleId.replace('-master', '');
+                    if (mastersBasicInfo[masterId]) {
+                      return mastersBasicInfo[masterId].loading.subtitle;
+                    }
                   }
                   // 동양화: 스타일 목록 (민화 · 풍속도 · 진경산수화)
                   if (cat === 'oriental' && styleId) {

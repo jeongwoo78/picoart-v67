@@ -20,9 +20,9 @@ import { orientalSecondary, orientalStory } from '../data/educationContent';
 import { movementsPrimary, movementsSecondary, movementsStory } from '../data/educationContent';
 import { mastersPrimary, mastersSecondary, mastersStory } from '../data/educationContent';
 // 단독변환 교육자료 (v67.3)
-import { mastersEducation } from '../data/mastersEducation';
-import { movementsOverview, movementsEducation } from '../data/movementsEducation';
-import { orientalOverview, orientalEducation } from '../data/orientalEducation';
+import { mastersEducation, mastersBasicInfo } from '../data/mastersEducation';
+import { movementsOverview, movementsEducation, movementsBasicInfo } from '../data/movementsEducation';
+import { orientalOverview, orientalEducation, orientalBasicInfo } from '../data/orientalEducation';
 // 원클릭 전용 교육자료 (분리된 파일) - v68: Full/UI 구분 제거
 import { oneclickMovementsPrimary, oneclickMovementsSecondary } from '../data/oneclickMovementsEducation';
 import { oneclickMastersPrimary, oneclickMastersSecondary } from '../data/oneclickMastersEducation';
@@ -2405,12 +2405,27 @@ const ResultScreen = ({
                 </div>
                 <div className="card-content">
                   <div className="technique-explanation">
-                    <p>
-                      {isFullTransform 
+                    {/* v68: 줄바꿈 처리 */}
+                    {(() => {
+                      const content = isFullTransform 
                         ? getPrimaryEducation().ui?.content
-                        : getSinglePrimaryEducation().content
-                      }
-                    </p>
+                        : getSinglePrimaryEducation().content;
+                      
+                      if (!content) return null;
+                      
+                      return content.split('\n\n').map((paragraph, index) => (
+                        paragraph.trim() && (
+                          <p key={index}>
+                            {paragraph.trim().split('\n').map((line, lineIndex) => (
+                              <React.Fragment key={lineIndex}>
+                                {line}
+                                {lineIndex < paragraph.trim().split('\n').length - 1 && <br />}
+                              </React.Fragment>
+                            ))}
+                          </p>
+                        )
+                      ));
+                    })()}
                     {/* 자세히 보기는 원클릭만 (단독변환은 Full 버전 없음) */}
                     {isFullTransform && (
                       <button 
@@ -2468,8 +2483,17 @@ const ResultScreen = ({
                           const styleName = isFullTransform ? (currentResult?.style?.name || selectedStyle.name) : selectedStyle.name;
                           
                           if (category === 'masters') {
-                            // API 실패 시 selectedStyle.name 사용
+                            // v68: 결과 화면에서는 대표작 표시
                             const artistForDisplay = displayArtist || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
+                            // masterId 추출: 'vangogh', 'klimt' 등
+                            const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
+                            const masterId = styleId?.replace('-master', '') || '';
+                            
+                            // mastersBasicInfo에서 result.subtitle (대표작) 가져오기
+                            if (masterId && mastersBasicInfo[masterId]?.result?.subtitle) {
+                              return mastersBasicInfo[masterId].result.subtitle;
+                            }
+                            // fallback: 기존 movement
                             const masterInfo = getMasterInfo(artistForDisplay);
                             return masterInfo.movement || '거장';
                           } else if (category === 'movements') {
@@ -2486,10 +2510,10 @@ const ResultScreen = ({
                   </div>
                 </div>
 
-                {/* Card Content - 거장(masters)은 숨김 */}
+                {/* Card Content - v68: 거장도 교육자료 표시 */}
                 {(() => {
                   const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
-                  if (category === 'masters') return null;
+                  // v68: 거장도 교육자료(화풍 설명) 표시
                   
                   return (
                 <div className="card-content">
