@@ -797,7 +797,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
   };
 
   // 카테고리별 부제 포맷 (v67: 새 표기 형식)
-  // 거장: 사조 · 국가 (로딩용)
+  // 거장: 대표작 (원클릭 변환 중 미리보기)
   // 미술사조: 화가명
   // 동양화: 스타일(영문)
   const getSubtitle = (result) => {
@@ -806,7 +806,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
     const styleName = result?.style?.name;
     
     if (cat === 'masters') {
-      // v68: mastersBasicInfo에서 loading.subtitle 사용
+      // v68: mastersBasicInfo에서 result.subtitle (대표작) 사용
       const artistToMasterId = {
         '반 고흐': 'vangogh', '빈센트 반 고흐': 'vangogh', 'Van Gogh': 'vangogh',
         '클림트': 'klimt', '구스타프 클림트': 'klimt', 'Klimt': 'klimt',
@@ -818,8 +818,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
         '리히텐슈타인': 'lichtenstein', '로이 리히텐슈타인': 'lichtenstein', 'Lichtenstein': 'lichtenstein'
       };
       const masterId = artistToMasterId[artist] || '';
-      if (masterId && mastersBasicInfo[masterId]?.loading?.subtitle) {
-        return mastersBasicInfo[masterId].loading.subtitle;
+      if (masterId && mastersBasicInfo[masterId]?.result?.subtitle) {
+        return mastersBasicInfo[masterId].result.subtitle;
       }
       // fallback
       const masterInfo = getMasterInfo(artist);

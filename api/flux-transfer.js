@@ -186,7 +186,7 @@ const ARTIST_CONFIG = {
   
   // === 르네상스 ===
   'botticelli':          { control: 0.70, brush: '75mm' },
-  'leonardo':            { control: 0.50, brush: '75mm' },
+  'leonardo':            { control: 0.65, brush: '75mm' },
   'titian':              { control: 0.70, brush: '75mm' },
   'michelangelo':        { control: 0.70, brush: '75mm' },
   'raphael':             { control: 0.70, brush: '75mm' },
