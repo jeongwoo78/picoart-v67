@@ -1868,6 +1868,18 @@ const ResultScreen = ({
         {/* Education Card */}
         {showInfo && (
           <>
+            {/* v70: 디버그 로그 */}
+            {(() => {
+              console.log('📚 [교육카드 조건]', { 
+                isOriginalView, 
+                isFullTransform, 
+                singleIndex, 
+                currentIndex,
+                shouldShow1st: isOriginalView,
+                shouldShow2nd: !isOriginalView
+              });
+              return null;
+            })()}
             {/* v67.3: 원클릭/단독변환 0번 = 1차 교육 */}
             {isOriginalView && (isFullTransform ? getPrimaryEducation() : getSinglePrimaryEducation()) ? (
               <div className="technique-card primary-education">
