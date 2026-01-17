@@ -548,8 +548,11 @@ const ResultScreen = ({
       const edu = mastersEducation[key];
       console.log('🔍 [거장 교육]', { key, found: !!edu });
       if (edu) {
+        // v68: 제목은 mastersBasicInfo에서 풀네임 사용
+        const masterId = styleValue?.replace('-master', '') || '';
+        const basicInfo = mastersBasicInfo[masterId];
         return {
-          title: edu.title,
+          title: basicInfo?.loading?.name || edu.title,
           content: edu.desc,
           category: 'masters'
         };
@@ -2004,17 +2007,9 @@ const ResultScreen = ({
                               masterId = artistToMasterId[artistForDisplay] || artistToMasterId[normalized] || '';
                             }
                             
-                            // v68: 원클릭 = 대표작, 단독변환 = 화파·국가
-                            if (isFullTransform) {
-                              // 원클릭: 대표작 표시
-                              if (masterId && mastersBasicInfo[masterId]?.result?.subtitle) {
-                                return mastersBasicInfo[masterId].result.subtitle;
-                              }
-                            } else {
-                              // 단독변환: 화파·국가 표시
-                              if (masterId && mastersBasicInfo[masterId]?.loading?.subtitle) {
-                                return mastersBasicInfo[masterId].loading.subtitle;
-                              }
+                            // v68: 원클릭 = 대표작, 단독변환 = 대표작 (둘 다 대표작!)
+                            if (masterId && mastersBasicInfo[masterId]?.result?.subtitle) {
+                              return mastersBasicInfo[masterId].result.subtitle;
                             }
                             // fallback: 기존 movement
                             const masterInfo = getMasterInfo(artistForDisplay);
