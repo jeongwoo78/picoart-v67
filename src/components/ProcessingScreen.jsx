@@ -65,7 +65,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
         const result = await processSingleStyle(style, i, totalCount);
         results.push(result);
         setCompletedCount(i + 1);
-        setCompletedResults([...results]);
+        // v70: 안전한 배열 복사
+        setCompletedResults(Array.isArray(results) ? [...results] : []);
         
         // API 부하 방지: 각 변환 후 2초 딜레이 (마지막 제외)
         if (i < styles.length - 1) {
