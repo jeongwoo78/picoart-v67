@@ -159,7 +159,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
     
     if (category === 'movements') {
       // console.log('🎓 Using oneclickMovementsPrimary');
-      return { ...oneclickMovementsPrimary, title: '2,500년 서양미술사 관통' };
+      // v68: 제목은 oneclickMovementsPrimary.title 그대로 사용
+      return oneclickMovementsPrimary;
     } else if (category === 'masters') {
       // console.log('🎓 Using oneclickMastersPrimary');
       return oneclickMastersPrimary;
@@ -173,7 +174,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
   // v68: 원클릭 1차 교육 (자세히 보기용) - Full/UI 통합
   const getPrimaryEducationFull = () => {
     if (category === 'movements') {
-      return { ...oneclickMovementsPrimary, title: '2,500년 서양미술사 관통' };
+      return oneclickMovementsPrimary;
     } else if (category === 'masters') {
       return oneclickMastersPrimary;
     } else if (category === 'oriental') {
@@ -967,12 +968,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
                 </div>
                 <div className="edu-card primary">
                   <p>{getPrimaryEducation().content}</p>
-                  <button 
-                    className="more-btn"
-                    onClick={() => setShowBottomSheet(true)}
-                  >
-                    자세히 보기 ▼
-                  </button>
+                  {/* v68: 자세히 보기 버튼 제거 - 제목이 시적 첫 줄이 되어 전체 내용이 카드에 표시됨 */}
                   {completedCount > 0 && <p className="hint">👆 완료된 결과를 확인하세요</p>}
                 </div>
               </div>
