@@ -1165,30 +1165,57 @@ const ResultScreen = ({
     // 화가별 풀네임, 생몰연도
     const artistInfo = {
       // 고대
-      'greek sculpture': { name: '그리스 조각', years: '' },
+      'greek sculpture': { name: '고대 그리스 조각', years: '' },
+      'classical sculpture': { name: '고대 그리스 조각', years: '' },
       'roman mosaic': { name: '로마 모자이크', years: '' },
+      'mosaic': { name: '로마 모자이크', years: '' },
+      'polykleitos': { name: '폴리클레이토스', years: 'BC 5세기' },
+      'phidias': { name: '페이디아스', years: 'BC 5세기' },
+      'myron': { name: '미론', years: 'BC 5세기' },
+      'praxiteles': { name: '프락시텔레스', years: 'BC 4세기' },
       // 중세
       'byzantine': { name: '비잔틴', years: '' },
+      'byzantine art': { name: '비잔틴 미술', years: '' },
       'gothic': { name: '고딕', years: '' },
+      'gothic art': { name: '고딕 미술', years: '' },
+      'limbourg brothers': { name: '랭부르 형제', years: '1385~1416' },
+      'islamic': { name: '이슬람 세밀화', years: '' },
       'islamic miniature': { name: '이슬람 세밀화', years: '' },
+      'persian miniature': { name: '페르시아 세밀화', years: '' },
       // 르네상스
       'leonardo': { name: '레오나르도 다 빈치', years: '1452~1519' },
       'leonardo da vinci': { name: '레오나르도 다 빈치', years: '1452~1519' },
+      'da vinci': { name: '레오나르도 다 빈치', years: '1452~1519' },
       'michelangelo': { name: '미켈란젤로 부오나로티', years: '1475~1564' },
+      'michelangelo buonarroti': { name: '미켈란젤로 부오나로티', years: '1475~1564' },
       'raphael': { name: '라파엘로 산치오', years: '1483~1520' },
+      'raphael sanzio': { name: '라파엘로 산치오', years: '1483~1520' },
+      'raffaello': { name: '라파엘로 산치오', years: '1483~1520' },
       'botticelli': { name: '산드로 보티첼리', years: '1445~1510' },
+      'sandro botticelli': { name: '산드로 보티첼리', years: '1445~1510' },
       'titian': { name: '티치아노 베첼리오', years: '1488~1576' },
+      'tiziano': { name: '티치아노 베첼리오', years: '1488~1576' },
       // 바로크
       'caravaggio': { name: '미켈란젤로 메리시 다 카라바조', years: '1571~1610' },
       'rembrandt': { name: '렘브란트 판 레인', years: '1606~1669' },
+      'rembrandt van rijn': { name: '렘브란트 판 레인', years: '1606~1669' },
+      'vermeer': { name: '요하네스 페르메이르', years: '1632~1675' },
+      'johannes vermeer': { name: '요하네스 페르메이르', years: '1632~1675' },
+      'jan vermeer': { name: '요하네스 페르메이르', years: '1632~1675' },
       'velazquez': { name: '디에고 벨라스케스', years: '1599~1660' },
       'velázquez': { name: '디에고 벨라스케스', years: '1599~1660' },
+      'diego velázquez': { name: '디에고 벨라스케스', years: '1599~1660' },
       'rubens': { name: '피터 파울 루벤스', years: '1577~1640' },
+      'peter paul rubens': { name: '피터 파울 루벤스', years: '1577~1640' },
       // 로코코
       'watteau': { name: '장 앙투안 와토', years: '1684~1721' },
+      'antoine watteau': { name: '장 앙투안 와토', years: '1684~1721' },
+      'jean-antoine watteau': { name: '장 앙투안 와토', years: '1684~1721' },
       'boucher': { name: '프랑수아 부셰', years: '1703~1770' },
       'françois boucher': { name: '프랑수아 부셰', years: '1703~1770' },
+      'francois boucher': { name: '프랑수아 부셰', years: '1703~1770' },
       'fragonard': { name: '장 오노레 프라고나르', years: '1732~1806' },
+      'jean-honoré fragonard': { name: '장 오노레 프라고나르', years: '1732~1806' },
       // 신고전주의
       'david': { name: '자크 루이 다비드', years: '1748~1825' },
       'jacques-louis david': { name: '자크 루이 다비드', years: '1748~1825' },
@@ -1215,8 +1242,12 @@ const ResultScreen = ({
       'claude monet': { name: '클로드 모네', years: '1840~1926' },
       'renoir': { name: '피에르 오귀스트 르누아르', years: '1841~1919' },
       'pierre-auguste renoir': { name: '피에르 오귀스트 르누아르', years: '1841~1919' },
+      'auguste renoir': { name: '피에르 오귀스트 르누아르', years: '1841~1919' },
       'degas': { name: '에드가 드가', years: '1834~1917' },
+      'edgar degas': { name: '에드가 드가', years: '1834~1917' },
       'manet': { name: '에두아르 마네', years: '1832~1883' },
+      'édouard manet': { name: '에두아르 마네', years: '1832~1883' },
+      'edouard manet': { name: '에두아르 마네', years: '1832~1883' },
       'morisot': { name: '베르트 모리조', years: '1841~1895' },
       'berthe morisot': { name: '베르트 모리조', years: '1841~1895' },
       'caillebotte': { name: '귀스타브 카유보트', years: '1848~1894' },
@@ -1224,10 +1255,13 @@ const ResultScreen = ({
       // 후기인상주의
       'van gogh': { name: '빈센트 반 고흐', years: '1853~1890' },
       'vincent van gogh': { name: '빈센트 반 고흐', years: '1853~1890' },
+      'vangogh': { name: '빈센트 반 고흐', years: '1853~1890' },
       'gauguin': { name: '폴 고갱', years: '1848~1903' },
       'paul gauguin': { name: '폴 고갱', years: '1848~1903' },
       'cezanne': { name: '폴 세잔', years: '1839~1906' },
       'cézanne': { name: '폴 세잔', years: '1839~1906' },
+      'paul cézanne': { name: '폴 세잔', years: '1839~1906' },
+      'paul cezanne': { name: '폴 세잔', years: '1839~1906' },
       // 야수파
       'matisse': { name: '앙리 마티스', years: '1869~1954' },
       'henri matisse': { name: '앙리 마티스', years: '1869~1954' },
@@ -2426,15 +2460,7 @@ const ResultScreen = ({
                         )
                       ));
                     })()}
-                    {/* 자세히 보기는 원클릭만 (단독변환은 Full 버전 없음) */}
-                    {isFullTransform && (
-                      <button 
-                        className="more-btn"
-                        onClick={() => openBottomSheet('primary')}
-                      >
-                        자세히 보기 ▲
-                      </button>
-                    )}
+                    {/* v68: 자세히 보기 버튼 제거 - 제목이 시적 첫 줄이 되어 전체 내용이 카드에 표시됨 */}
                   </div>
                 </div>
               </div>
@@ -2487,7 +2513,22 @@ const ResultScreen = ({
                             const artistForDisplay = displayArtist || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
                             // masterId 추출: 'vangogh', 'klimt' 등
                             const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
-                            const masterId = styleId?.replace('-master', '') || '';
+                            let masterId = styleId?.replace('-master', '') || '';
+                            
+                            // styleId가 없으면 artistForDisplay에서 추출
+                            if (!masterId && artistForDisplay) {
+                              const artistToMasterId = {
+                                '반 고흐': 'vangogh', '빈센트 반 고흐': 'vangogh', 'Van Gogh': 'vangogh',
+                                '클림트': 'klimt', '구스타프 클림트': 'klimt', 'Klimt': 'klimt',
+                                '뭉크': 'munch', '에드바르 뭉크': 'munch', 'Munch': 'munch',
+                                '마티스': 'matisse', '앙리 마티스': 'matisse', 'Matisse': 'matisse',
+                                '샤갈': 'chagall', '마르크 샤갈': 'chagall', 'Chagall': 'chagall',
+                                '피카소': 'picasso', '파블로 피카소': 'picasso', 'Picasso': 'picasso',
+                                '프리다': 'frida', '프리다 칼로': 'frida', 'Frida': 'frida', 'Frida Kahlo': 'frida',
+                                '리히텐슈타인': 'lichtenstein', '로이 리히텐슈타인': 'lichtenstein', 'Lichtenstein': 'lichtenstein'
+                              };
+                              masterId = artistToMasterId[artistForDisplay] || '';
+                            }
                             
                             // mastersBasicInfo에서 result.subtitle (대표작) 가져오기
                             if (masterId && mastersBasicInfo[masterId]?.result?.subtitle) {
