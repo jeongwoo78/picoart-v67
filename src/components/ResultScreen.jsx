@@ -31,7 +31,10 @@ import {
   MODERNISM_SUB, NINETEENTH_CENTURY_SUB, ART_NOUVEAU,
   CATEGORY_ICONS,
   getMovementDisplayInfo as masterGetMovementDisplayInfo,
-  getOrientalDisplayInfo as masterGetOrientalDisplayInfo
+  getOrientalDisplayInfo as masterGetOrientalDisplayInfo,
+  findArtistByName,
+  findMasterByNameOrWork,
+  findOrientalStyle
 } from '../data/masterData';
 
 
@@ -1463,63 +1466,14 @@ const ResultScreen = ({
   };
 
 
-  // ========== 동양화 스타일명 포맷 통일 ==========
+  // ========== 동양화 스타일명 포맷 통일 (v68: masterData 사용) ==========
   const formatOrientalStyle = (styleName) => {
     if (!styleName) return '동양화 기법';
     
-    const normalized = styleName.toLowerCase().trim();
-    
-    // 동양화 스타일 통일 매핑: 한글명(영문명)
-    const orientalMap = {
-      // 한국
-      '한국 전통화': '민화(Minhwa)',
-      'korean-genre': '풍속도(Pungsokdo)',
-      'korean-minhwa': '민화(Minhwa)',
-      'korean-jingyeong': '진경산수화(Jingyeong)',
-      
-      // 중국
-      'chinese gongbi': '공필화(Gongbi)',
-      'chinese-gongbi': '공필화(Gongbi)',
-      'gongbi': '공필화(Gongbi)',
-      'chinese-ink': '수묵화(Ink Wash)',
-      'chinese-ink-wash': '수묵화(Ink Wash)',
-      'chinese-huaniao': '화조화(Huaniao)',
-      
-      // 일본
-      '일본 우키요에': '우키요에(Ukiyo-e)',
-      'japanese-ukiyoe': '우키요에(Ukiyo-e)',
-      'ukiyoe': '우키요에(Ukiyo-e)',
-      'ukiyo-e': '우키요에(Ukiyo-e)'
-    };
-    
-    // 정확한 매칭
-    if (orientalMap[styleName]) {
-      return orientalMap[styleName];
-    }
-    if (orientalMap[normalized]) {
-      return orientalMap[normalized];
-    }
-    
-    // 부분 매칭 - 한국
-    if (normalized.includes('minhwa') || normalized.includes('민화')) {
-      return '민화(Minhwa)';
-    }
-    if (normalized.includes('pungsok') || normalized.includes('genre') || normalized.includes('풍속')) {
-      return '풍속도(Pungsokdo)';
-    }
-    if (normalized.includes('jingyeong') || normalized.includes('진경')) {
-      return '진경산수화(Jingyeong)';
-    }
-    // 부분 매칭 - 중국
-    if (normalized.includes('gongbi') || normalized.includes('공필')) {
-      return '공필화(Gongbi)';
-    }
-    if (normalized.includes('ink') || normalized.includes('수묵')) {
-      return '수묵화(Ink Wash)';
-    }
-    // 부분 매칭 - 일본
-    if (normalized.includes('ukiyo') || normalized.includes('우키요에')) {
-      return '우키요에(Ukiyo-e)';
+    // masterData에서 동양화 스타일 찾기
+    const result = findOrientalStyle(styleName);
+    if (result) {
+      return `${result.style.ko}(${result.style.en})`;
     }
     
     // 매핑에 없으면 원본 반환
@@ -1527,281 +1481,60 @@ const ResultScreen = ({
   };
 
 
-  // ========== 화가 이름 한글(Full Name) 변환 ==========
+  // ========== 화가명 포맷팅 (v68: masterData 사용) ==========
   const formatArtistName = (artistName) => {
     if (!artistName) return '예술 스타일';
     
-    const normalized = artistName.toLowerCase().trim();
-    // console.log('🎨 formatArtistName input:', artistName);
-    // console.log('🎨 formatArtistName normalized:', normalized);
-    
-    // 영문 이름 → 한글 풀네임(Full Name) 매핑
-    const nameMap = {
-      // 고대 미술
-      'ancient-greek-sculpture': '고대 조각(Ancient Sculpture)',
-      'ancient-sculpture': '고대 조각(Ancient Sculpture)',
-      'classical-sculpture': '고대 조각(Ancient Sculpture)',
-      'classical sculpture': '고대 조각(Classical Sculpture)',
-      'greek-sculpture': '고대 조각(Ancient Sculpture)',
-      'roman-mosaic': '로마 모자이크(Roman Mosaic)',
-      'ancient-mosaic': '로마 모자이크(Roman Mosaic)',
-      'mosaic': '로마 모자이크(Roman Mosaic)',
-      
-      // 중세 미술
-      'byzantine': '비잔틴(Byzantine)',
-      'byzantine mosaic': '비잔틴 모자이크(Byzantine Mosaic)',
-      'gothic': '고딕(Gothic)',
-      'gothic stained glass': '고딕 스테인드글라스(Gothic Stained Glass)',
-      'romanesque': '로마네스크(Romanesque)',
-      'islamic miniature': '이슬람 세밀화(Islamic Miniature)',
-      'islamic geometry': '이슬람 기하학(Islamic Geometry)',
-      
-      // 르네상스
-      'leonardo': '레오나르도 다 빈치(Leonardo da Vinci)',
-      'leonardo da vinci': '레오나르도 다 빈치(Leonardo da Vinci)',
-      'michelangelo': '미켈란젤로 부오나로티(Michelangelo Buonarroti)',
-      'raphael': '라파엘로 산치오(Raffaello Sanzio)',
-      'botticelli': '산드로 보티첼리(Sandro Botticelli)',
-      'titian': '티치아노 베첼리오(Tiziano Vecellio)',
-      
-      // 바로크
-      'caravaggio': '미켈란젤로 메리시 다 카라바조(Caravaggio)',
-      'michelangelo merisi da caravaggio': '미켈란젤로 메리시 다 카라바조(Caravaggio)',
-      'rembrandt': '렘브란트 판 레인(Rembrandt van Rijn)',
-      'velazquez': '디에고 벨라스케스(Diego Velázquez)',
-      'rubens': '피터 파울 루벤스(Peter Paul Rubens)',
-      'peter paul rubens': '피터 파울 루벤스(Peter Paul Rubens)',
-      
-      // 로코코
-      'watteau': '장 앙투안 와토(Jean-Antoine Watteau)',
-      'jean-antoine watteau': '장 앙투안 와토(Jean-Antoine Watteau)',
-      'boucher': '프랑수아 부셰(François Boucher)',
-      'françois boucher': '프랑수아 부셰(François Boucher)',
-      'francois boucher': '프랑수아 부셰(François Boucher)',
-      'jean-honoré fragonard': '장 오노레 프라고나르(Jean-Honoré Fragonard)',
-      'jean-honore fragonard': '장 오노레 프라고나르(Jean-Honoré Fragonard)',
-      'fragonard': '장 오노레 프라고나르(Jean-Honoré Fragonard)',
-      
-      // 신고전주의
-      'jacques-louis-david': '자크 루이 다비드(Jacques-Louis David)',
-      'david': '자크 루이 다비드(Jacques-Louis David)',
-      'ingres': '장 오귀스트 도미니크 앵그르(Jean-Auguste-Dominique Ingres)',
-      'jean-auguste-dominique ingres': '장 오귀스트 도미니크 앵그르(Jean-Auguste-Dominique Ingres)',
-      
-      // 낭만주의
-      'turner': '윌리엄 터너(J.M.W. Turner)',
-      'j.m.w. turner': '윌리엄 터너(J.M.W. Turner)',
-      'william turner': '윌리엄 터너(J.M.W. Turner)',
-      'friedrich': '카스파르 다비드 프리드리히(Caspar David Friedrich)',
-      'caspar david friedrich': '카스파르 다비드 프리드리히(Caspar David Friedrich)',
-      'delacroix': '외젠 들라크루아(Eugène Delacroix)',
-      'eugène delacroix': '외젠 들라크루아(Eugène Delacroix)',
-      'eugene delacroix': '외젠 들라크루아(Eugène Delacroix)',
-      'goya': '프란시스코 고야(Francisco Goya)',
-      'francisco goya': '프란시스코 고야(Francisco Goya)',
-      
-      // 사실주의
-      'millet': '장 프랑수아 밀레(Jean-François Millet)',
-      'jean-françois millet': '장 프랑수아 밀레(Jean-François Millet)',
-      'jean-francois millet': '장 프랑수아 밀레(Jean-François Millet)',
-      'manet': '에두아르 마네(Édouard Manet)',
-      'édouard manet': '에두아르 마네(Édouard Manet)',
-      'edouard manet': '에두아르 마네(Édouard Manet)',
-      
-      // 인상주의
-      'monet': '클로드 모네(Claude Monet)',
-      'claude monet': '클로드 모네(Claude Monet)',
-      'renoir': '피에르 오귀스트 르누아르(Pierre-Auguste Renoir)',
-      'pierre-auguste renoir': '피에르 오귀스트 르누아르(Pierre-Auguste Renoir)',
-      'degas': '에드가 드가(Edgar Degas)',
-      'edgar degas': '에드가 드가(Edgar Degas)',
-      'caillebotte': '귀스타브 카유보트(Gustave Caillebotte)',
-      'gustave caillebotte': '귀스타브 카유보트(Gustave Caillebotte)',
-      
-      // 후기인상주의
-      'van gogh': '빈센트 반 고흐(Vincent van Gogh)',
-      'vincent van gogh': '빈센트 반 고흐(Vincent van Gogh)',
-      'cézanne': '폴 세잔(Paul Cézanne)',
-      'cezanne': '폴 세잔(Paul Cézanne)',
-      'paul cézanne': '폴 세잔(Paul Cézanne)',
-      'paul cezanne': '폴 세잔(Paul Cézanne)',
-      'gauguin': '폴 고갱(Paul Gauguin)',
-      'paul gauguin': '폴 고갱(Paul Gauguin)',
-      'seurat': '조르주 쇠라(Georges Seurat)',
-      'georges seurat': '조르주 쇠라(Georges Seurat)',
-      
-      // 야수파
-      'matisse': '앙리 마티스(Henri Matisse)',
-      'henri matisse': '앙리 마티스(Henri Matisse)',
-      'derain': '앙드레 드랭(André Derain)',
-      'andré derain': '앙드레 드랭(André Derain)',
-      'andre derain': '앙드레 드랭(André Derain)',
-      'vlaminck': '모리스 드 블라맹크(Maurice de Vlaminck)',
-      'maurice de vlaminck': '모리스 드 블라맹크(Maurice de Vlaminck)',
-      
-      // 표현주의
-      'munch': '에드바르 뭉크(Edvard Munch)',
-      'edvard munch': '에드바르 뭉크(Edvard Munch)',
-      'kirchner': '에른스트 루트비히 키르히너(Ernst Ludwig Kirchner)',
-      'ernst ludwig kirchner': '에른스트 루트비히 키르히너(Ernst Ludwig Kirchner)',
-      'kokoschka': '오스카 코코슈카(Oskar Kokoschka)',
-      'oskar kokoschka': '오스카 코코슈카(Oskar Kokoschka)',
-      
-      // 입체주의
-      'picasso': '파블로 피카소(Pablo Picasso)',
-      'pablo picasso': '파블로 피카소(Pablo Picasso)',
-      
-      // 초현실주의
-      'magritte': '르네 마그리트(René Magritte)',
-      'rené magritte': '르네 마그리트(René Magritte)',
-      'rene magritte': '르네 마그리트(René Magritte)',
-      'miro': '호안 미로(Joan Miró)',
-      'miró': '호안 미로(Joan Miró)',
-      'joan miro': '호안 미로(Joan Miró)',
-      'joan miró': '호안 미로(Joan Miró)',
-      'chagall': '마르크 샤갈(Marc Chagall)',
-      'marc chagall': '마르크 샤갈(Marc Chagall)',
-      
-      // 팝아트 (워홀 제거)
-      'lichtenstein': '로이 리히텐슈타인(Roy Lichtenstein)',
-      'roy lichtenstein': '로이 리히텐슈타인(Roy Lichtenstein)',
-      'haring': '키스 해링(Keith Haring)',
-      'keith haring': '키스 해링(Keith Haring)',
-      'keith-haring': '키스 해링(Keith Haring)',
-      
-      // 동양화 - 한국
-      'korean-jingyeong': '진경산수화(Korean True-View Landscape)',
-      'korean_jingyeong': '진경산수화(Korean True-View Landscape)',
-      'jingyeong': '진경산수화(True-View Landscape)',
-      'true-view': '진경산수화(True-View Landscape)',
-      'true-view-landscape': '진경산수화(True-View Landscape)',
-      'korean-landscape': '진경산수화(Korean Landscape)',
-      
-      'korean-minhwa': '민화(Korean Folk Painting)',
-      'korean_minhwa': '민화(Korean Folk Painting)',
-      'minhwa': '민화(Folk Painting)',
-      'folk-painting': '민화(Folk Painting)',
-      'korean-folk': '민화(Korean Folk)',
-      
-      'korean-genre': '풍속도(Korean Genre Painting)',
-      'korean_genre': '풍속도(Korean Genre Painting)',
-      'genre-painting': '풍속도(Genre Painting)',
-      'korean-genre-painting': '풍속도(Korean Genre Painting)',
-      'pungsokdo': '풍속도(Pungsokdo)',
-      
-      // 동양화 - 중국
-      'chinese-ink': '수묵산수화(Chinese Ink Landscape)',
-      'chinese_ink': '수묵산수화(Chinese Ink Landscape)',
-      'ink-landscape': '수묵산수화(Ink Landscape)',
-      'ink-painting': '수묵산수화(Ink Painting)',
-      'shanshui': '수묵산수화(Shanshui)',
-      'chinese-landscape': '수묵산수화(Chinese Landscape)',
-      
-      'chinese-gongbi': '공필화(Chinese Gongbi)',
-      'chinese_gongbi': '공필화(Chinese Gongbi)',
-      'gongbi': '공필화(Gongbi)',
-      'gongbi-painting': '공필화(Gongbi Painting)',
-      
-      'chinese-huaniao': '화조화(Chinese Bird-and-Flower)',
-      'chinese_huaniao': '화조화(Chinese Bird-and-Flower)',
-      'huaniao': '화조화(Bird-and-Flower)',
-      'bird-and-flower': '화조화(Bird-and-Flower)',
-      'flower-and-bird': '화조화(Flower-and-Bird)',
-      
-      // 동양화 - 일본
-      'japanese-ukiyoe': '우키요에(Japanese Ukiyo-e)',
-      'japanese_ukiyoe': '우키요에(Japanese Ukiyo-e)',
-      'ukiyoe': '우키요에(Ukiyo-e)',
-      'ukiyo-e': '우키요에(Ukiyo-e)',
-      'japanese-woodblock': '우키요에(Japanese Woodblock)',
-      'woodblock-print': '우키요에(Woodblock Print)',
-      
-      // 한글 화가명도 매핑 (API가 한글로 반환하는 경우)
-      '마티스': '앙리 마티스(Henri Matisse)',
-      '피카소': '파블로 피카소(Pablo Picasso)',
-      '뭉크': '에드바르 뭉크(Edvard Munch)',
-      '반 고흐': '빈센트 반 고흐(Vincent van Gogh)',
-      '클림트': '구스타프 클림트(Gustav Klimt)',
-      '프리다': '프리다 칼로(Frida Kahlo)',
-      '프리다 칼로': '프리다 칼로(Frida Kahlo)'
-    };
-    
-    // 매핑에서 찾기
-    if (nameMap[normalized]) {
-      // console.log('🎨 formatArtistName found:', nameMap[normalized]);
-      return nameMap[normalized];
+    // masterData에서 화가 정보 찾기
+    const artist = findArtistByName(artistName);
+    if (artist) {
+      // 한글명(영문명) 형식으로 반환
+      return `${artist.ko}(${artist.en})`;
     }
     
-    // 부분 매칭 시도 (대문자/공백 변형 대응)
-    for (const [key, value] of Object.entries(nameMap)) {
-      if (normalized.replace(/[\s-_]/g, '') === key.replace(/[\s-_]/g, '')) {
-        // console.log('🎨 formatArtistName partial match:', value);
-        return value;
-      }
+    // 동양화 스타일 검색
+    const oriental = findOrientalStyle(artistName);
+    if (oriental) {
+      return `${oriental.style.ko}(${oriental.style.en})`;
+    }
+    
+    // 거장 검색
+    const master = findMasterByNameOrWork(artistName, null);
+    if (master) {
+      return `${master.master.ko}(${master.master.en})`;
     }
     
     // 매핑에 없으면 원본 반환
-    // console.log('🎨 formatArtistName NOT FOUND, returning original:', artistName);
     return artistName;
   };
 
 
-  // ========== 신고전 vs 낭만 vs 사실: 구체적 사조 매핑 ==========
+  // ========== 신고전 vs 낭만 vs 사실: 구체적 사조 매핑 (v68: masterData 사용) ==========
   const getSpecificMovement = (artistName) => {
-    const artist = artistName.toLowerCase();
+    const artist = findArtistByName(artistName);
+    if (!artist) return null;
     
-    // 신고전주의
-    const neoclassical = ['jacques-louis-david', 'david', 'ingres', 'jean-auguste-dominique ingres'];
+    const movementMap = {
+      'neoclassicism': { text: '신고전주의', color: 'neoclassical' },
+      'romanticism': { text: '낭만주의', color: 'romantic' },
+      'realism': { text: '사실주의', color: 'realist' }
+    };
     
-    // 낭만주의
-    const romantic = ['turner', 'j.m.w. turner', 'william turner', 
-                      'friedrich', 'caspar david friedrich', 
-                      'delacroix', 'eugène delacroix', 'eugene delacroix'];
-    
-    // 사실주의
-    const realist = ['courbet', 'gustave courbet',
-                     'manet', 'édouard manet', 'edouard manet'];
-    
-    if (neoclassical.some(name => artist.includes(name))) {
-      return { text: '신고전주의', color: 'neoclassical' };
-    }
-    if (romantic.some(name => artist.includes(name))) {
-      return { text: '낭만주의', color: 'romantic' };
-    }
-    if (realist.some(name => artist.includes(name))) {
-      return { text: '사실주의', color: 'realist' };
-    }
-    
-    return null; // 매칭 안 되면 null
+    return movementMap[artist.movementId] || null;
   };
 
-  // ========== 20세기 모더니즘: 세부 사조 매핑 ==========
+  // ========== 20세기 모더니즘: 세부 사조 매핑 (v68: masterData 사용) ==========
   const getModernismMovement = (artistName) => {
-    const artist = artistName.toLowerCase();
+    const artist = findArtistByName(artistName);
+    if (!artist?.sub) return null;
     
-    // 입체주의 - v59: 브라크 제거 (피카소와 중복)
-    const cubism = ['picasso', 'pablo picasso'];
+    const subMap = {
+      'cubism': { text: '입체주의', color: 'cubism' },
+      'surrealism': { text: '초현실주의', color: 'surrealism' },
+      'popArt': { text: '팝아트', color: 'popart' }
+    };
     
-    // 초현실주의 - v59: 달리 완전 삭제
-    const surrealism = ['magritte', 'rené magritte', 'rene magritte',
-                        'miro', 'miró', 'joan miro', 'joan miró',
-                        'chagall', 'marc chagall'];
-    
-    // 팝아트 (워홀 제거)
-    const popart = ['lichtenstein', 'roy lichtenstein',
-                    'keith haring', 'keith-haring', 'haring'];
-    
-    if (cubism.some(name => artist.includes(name))) {
-      return { text: '입체주의', color: 'cubism' };
-    }
-    if (surrealism.some(name => artist.includes(name))) {
-      return { text: '초현실주의', color: 'surrealism' };
-    }
-    if (popart.some(name => artist.includes(name))) {
-      return { text: '팝아트', color: 'popart' };
-    }
-    
-    return null; // 매칭 안 되면 null
+    return subMap[artist.sub] || null;
   };
 
 
