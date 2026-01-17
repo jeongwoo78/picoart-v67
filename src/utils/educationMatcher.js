@@ -262,9 +262,11 @@ const MOVEMENTS_ARTIST_MAP = {
   'Gustave Caillebotte': 'caillebotte',
   
   // 후기인상주의
-  'Van Gogh': 'gogh',
-  'Vincent van Gogh': 'gogh',
-  'Vincent Van Gogh': 'gogh',
+  'Van Gogh': 'vangogh',
+  'Vincent van Gogh': 'vangogh',
+  'Vincent Van Gogh': 'vangogh',
+  'van gogh': 'vangogh',
+  'VAN GOGH': 'vangogh',
   'Cezanne': 'cezanne',
   'Cézanne': 'cezanne',
   'Paul Cézanne': 'cezanne',

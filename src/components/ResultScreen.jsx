@@ -2521,15 +2521,7 @@ const ResultScreen = ({
                           </p>
                         )
                       ))}
-                      {/* v67.2: 자세히 보기 버튼 (원클릭만) */}
-                      {isFullTransform && (
-                        <button 
-                          className="more-btn"
-                          onClick={() => openBottomSheet('secondary')}
-                        >
-                          자세히 보기 ▲
-                        </button>
-                      )}
+                      {/* v68: 자세히 보기 버튼 제거 (결과에서는 불필요) */}
                     </div>
                   )}
                 </div>
