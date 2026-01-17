@@ -2439,7 +2439,7 @@ const ResultScreen = ({
             {isOriginalView && (isFullTransform ? getPrimaryEducation() : getSinglePrimaryEducation()) ? (
               <div className="technique-card primary-education">
                 <div className="card-header">
-                  <div className="technique-icon">📚</div>
+                  <div className="technique-icon">{selectedStyle?.icon || '🎨'}</div>
                   <div>
                     <h2>
                       {isFullTransform 
@@ -2447,7 +2447,40 @@ const ResultScreen = ({
                         : (getSinglePrimaryEducation().title || selectedStyle.name)
                       }
                     </h2>
-                    {/* v68: 부제 제거 */}
+                    {/* v68: 원클릭 0번은 부제 제거, 단독변환 0번은 부제 표시 */}
+                    {!isFullTransform && (
+                      <p className="technique-subtitle">
+                        <span className="artist-name">
+                          {(() => {
+                            const category = selectedStyle?.category;
+                            if (category === 'masters') {
+                              // 거장: 화파·국가
+                              const styleId = selectedStyle?.id || selectedStyle?.style;
+                              const masterId = styleId?.replace('-master', '') || '';
+                              if (masterId && mastersBasicInfo[masterId]?.loading?.subtitle) {
+                                return mastersBasicInfo[masterId].loading.subtitle;
+                              }
+                              return '';
+                            } else if (category === 'movements') {
+                              // 사조: 대표 화가들 (movementsBasicInfo에서)
+                              const styleKey = selectedStyle?.style || selectedStyle?.id;
+                              if (styleKey && movementsBasicInfo[styleKey]?.loading?.subtitle) {
+                                return movementsBasicInfo[styleKey].loading.subtitle;
+                              }
+                              return '';
+                            } else if (category === 'oriental') {
+                              // 동양화: 스타일들 (orientalBasicInfo에서)
+                              const styleKey = selectedStyle?.style || selectedStyle?.id;
+                              if (styleKey && orientalBasicInfo[styleKey]?.loading?.subtitle) {
+                                return orientalBasicInfo[styleKey].loading.subtitle;
+                              }
+                              return '';
+                            }
+                            return '';
+                          })()}
+                        </span>
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="card-content">
@@ -2533,11 +2566,15 @@ const ResultScreen = ({
                           const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
                           const styleName = isFullTransform ? (currentResult?.style?.name || selectedStyle.name) : selectedStyle.name;
                           
-                          // v68 디버그
-                          console.log('🎨 [결과 부제]', { category, styleName, displayArtist, isFullTransform });
+                          // v68: 단독변환에서 aiSelectedArtist 직접 사용
+                          const artistForSubtitle = isFullTransform 
+                            ? displayArtist 
+                            : (aiSelectedArtist || displayArtist);
+                          
+                          console.log('🎨 [결과 부제]', { category, styleName, artistForSubtitle, aiSelectedArtist, displayArtist, isFullTransform });
                           
                           if (category === 'masters') {
-                            const artistForDisplay = displayArtist || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
+                            const artistForDisplay = artistForSubtitle || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
                             // masterId 추출: 'vangogh', 'klimt' 등
                             const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
                             let masterId = styleId?.replace('-master', '') || '';
@@ -2574,13 +2611,13 @@ const ResultScreen = ({
                             const masterInfo = getMasterInfo(artistForDisplay);
                             return masterInfo.movement || '거장';
                           } else if (category === 'movements') {
-                            const movementInfo = getMovementDisplayInfo(styleName, displayArtist);
+                            const movementInfo = getMovementDisplayInfo(styleName, artistForSubtitle);
                             return movementInfo.subtitle;
                           } else if (category === 'oriental') {
-                            const orientalInfo = getOrientalDisplayInfo(displayArtist);
+                            const orientalInfo = getOrientalDisplayInfo(artistForSubtitle);
                             return orientalInfo.subtitle;
                           }
-                          return formatArtistName(displayArtist);
+                          return formatArtistName(artistForSubtitle);
                         })()}
                       </span>
                     </p>
@@ -2876,6 +2913,11 @@ const ResultScreen = ({
           padding-bottom: 1.5rem;
           border-bottom: 2px solid #e0e0e0;
           margin-bottom: 1.5rem;
+        }
+
+        /* v68: 원클릭 0번 (부제 없음) - 제목 세로 가운데 */
+        .primary-education .card-header {
+          align-items: center;
         }
 
         .technique-icon {
