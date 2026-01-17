@@ -2309,14 +2309,9 @@ const ResultScreen = ({
           margin-bottom: 1.5rem;
         }
 
-        /* v68: 원클릭 0번 (부제 없음) - 아이콘+제목 가운데 정렬 */
+        /* v68: 원클릭 0번 (부제 없음) - 세로 가운데, 가로 왼쪽 */
         .primary-education .card-header {
-          flex-direction: column;
           align-items: center;
-          text-align: center;
-        }
-        .primary-education .card-header h2 {
-          text-align: center;
         }
 
         .technique-icon {

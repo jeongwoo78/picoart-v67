@@ -847,6 +847,23 @@ export const findOrientalStyle = (styleName) => {
   const normalized = styleName.toLowerCase().trim();
   
   for (const [countryId, country] of Object.entries(ORIENTAL)) {
+    // 국가 이름으로 검색 (한국 전통회화, 중국 전통회화 등)
+    if (country.ko === styleName || 
+        country.en?.toLowerCase() === normalized ||
+        countryId === normalized ||
+        normalized.includes(countryId)) {
+      // 국가 매칭 시 첫 번째 스타일 반환
+      const firstStyleId = Object.keys(country.styles)[0];
+      const firstStyle = country.styles[firstStyleId];
+      return {
+        country,
+        style: firstStyle,
+        styleId: firstStyleId,
+        key: `${countryId}-${firstStyleId}`
+      };
+    }
+    
+    // 스타일 이름으로 검색
     if (country.styles) {
       for (const [styleId, style] of Object.entries(country.styles)) {
         if (styleId === normalized ||

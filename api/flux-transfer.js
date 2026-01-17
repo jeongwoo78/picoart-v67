@@ -2119,6 +2119,7 @@ CALLIGRAPHY TEXT (POSITIVE MEANING ONLY):
 Return ONLY valid JSON (no markdown):
 {
   "analysis": "brief photo description",
+  "selected_artist": "Japanese Ukiyo-e",
   "calligraphy_text": "positive text you chose",
   "prompt": "Japanese Ukiyo-e woodblock print style with flat bold colors, strong black outlines, CLOTHING: traditional Japanese attire (elegant kimono for women, hakama pants with haori jacket for men), decorative patterns, Mt Fuji or cherry blossom or waves background. Include ONLY the calligraphy text '[your calligraphy_text]' in vertical brushwork style."
 }`;
