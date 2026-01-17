@@ -332,10 +332,10 @@ export const ORIENTAL = {
     icon: '🗾',
     description: '섬세한 관찰과 대담한 생략',
     styles: {
-      'ukiyo-e': { 
+      'ukiyoe': { 
         ko: '우키요에', 
         en: 'Ukiyo-e',
-        aliases: ['japanese ukiyo-e', 'japanese-ukiyoe', 'ukiyoe', '일본 우키요에', '우키요에']
+        aliases: ['japanese ukiyo-e', 'japanese-ukiyoe', 'ukiyo-e', '일본 우키요에', '우키요에']
       }
     }
   }

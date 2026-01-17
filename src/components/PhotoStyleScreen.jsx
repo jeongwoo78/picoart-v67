@@ -22,17 +22,17 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect }) => {
         category: 'movements'
       },
       styles: [
-        { id: 'ancient', name: '그리스·로마', icon: '🏛️', period: 'BC 800 - AD 500' },
-        { id: 'medieval', name: '중세 미술', icon: '⛪', period: '4-14세기' },
-        { id: 'renaissance', name: '르네상스', icon: '🎭', period: '14-16세기' },
-        { id: 'baroque', name: '바로크', icon: '👑', period: '17세기' },
-        { id: 'rococo', name: '로코코', icon: '🌸', period: '18세기' },
-        { id: 'neoclassicism_vs_romanticism_vs_realism', name: '신고전 vs 낭만 vs 사실주의', icon: '⚖️', period: '1770-1870' },
-        { id: 'impressionism', name: '인상주의', icon: '🌅', period: '1860-1890' },
-        { id: 'postImpressionism', name: '후기인상주의', icon: '🌻', period: '1880-1910' },
-        { id: 'fauvism', name: '야수파', icon: '🎨', period: '1905-1908' },
-        { id: 'expressionism', name: '표현주의', icon: '😱', period: '1905-1920' },
-        { id: 'modernism', name: '20세기 모더니즘', icon: '🔮', period: '1907-1970' }
+        { id: 'ancient', name: '그리스·로마', icon: '🏛️', period: 'BC 800 - AD 500', category: 'movements' },
+        { id: 'medieval', name: '중세 미술', icon: '⛪', period: '4-14세기', category: 'movements' },
+        { id: 'renaissance', name: '르네상스', icon: '🎭', period: '14-16세기', category: 'movements' },
+        { id: 'baroque', name: '바로크', icon: '👑', period: '17세기', category: 'movements' },
+        { id: 'rococo', name: '로코코', icon: '🌸', period: '18세기', category: 'movements' },
+        { id: 'neoclassicism_vs_romanticism_vs_realism', name: '신고전 vs 낭만 vs 사실주의', icon: '⚖️', period: '1770-1870', category: 'movements' },
+        { id: 'impressionism', name: '인상주의', icon: '🌅', period: '1860-1890', category: 'movements' },
+        { id: 'postImpressionism', name: '후기인상주의', icon: '🌻', period: '1880-1910', category: 'movements' },
+        { id: 'fauvism', name: '야수파', icon: '🎨', period: '1905-1908', category: 'movements' },
+        { id: 'expressionism', name: '표현주의', icon: '😱', period: '1905-1920', category: 'movements' },
+        { id: 'modernism', name: '20세기 모더니즘', icon: '🔮', period: '1907-1970', category: 'movements' }
       ]
     },
     masters: {
@@ -47,13 +47,13 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect }) => {
         category: 'masters'
       },
       styles: [
-        { id: 'vangogh-master', name: '반 고흐', icon: '🌻', period: '1853-1890' },
-        { id: 'klimt-master', name: '클림트', icon: '✨', period: '1862-1918' },
-        { id: 'munch-master', name: '뭉크', icon: '😱', period: '1863-1944' },
-        { id: 'matisse-master', name: '마티스', icon: '🎭', period: '1869-1954' },
-        { id: 'chagall-master', name: '샤갈', icon: '🎠', period: '1887-1985' },
-        { id: 'frida-master', name: '프리다 칼로', icon: '🌺', period: '1907-1954' },
-        { id: 'lichtenstein-master', name: '리히텐슈타인', icon: '💥', period: '1923-1997' }
+        { id: 'vangogh-master', name: '반 고흐', icon: '🌻', period: '1853-1890', category: 'masters' },
+        { id: 'klimt-master', name: '클림트', icon: '✨', period: '1862-1918', category: 'masters' },
+        { id: 'munch-master', name: '뭉크', icon: '😱', period: '1863-1944', category: 'masters' },
+        { id: 'matisse-master', name: '마티스', icon: '🎭', period: '1869-1954', category: 'masters' },
+        { id: 'chagall-master', name: '샤갈', icon: '🎠', period: '1887-1985', category: 'masters' },
+        { id: 'frida-master', name: '프리다 칼로', icon: '🌺', period: '1907-1954', category: 'masters' },
+        { id: 'lichtenstein-master', name: '리히텐슈타인', icon: '💥', period: '1923-1997', category: 'masters' }
       ]
     },
     oriental: {
@@ -68,9 +68,9 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect }) => {
         category: 'oriental'
       },
       styles: [
-        { id: 'korean', name: '한국 전통회화', icon: '🎎', period: '수묵화·민화·풍속도' },
-        { id: 'chinese', name: '중국 전통회화', icon: '🐉', period: '수묵산수·공필화' },
-        { id: 'japanese', name: '일본 전통회화', icon: '🗾', period: '우키요에' }
+        { id: 'korean', name: '한국 전통회화', icon: '🎎', period: '수묵화·민화·풍속도', category: 'oriental' },
+        { id: 'chinese', name: '중국 전통회화', icon: '🐉', period: '수묵산수·공필화', category: 'oriental' },
+        { id: 'japanese', name: '일본 전통회화', icon: '🗾', period: '우키요에', category: 'oriental' }
       ]
     }
   };
